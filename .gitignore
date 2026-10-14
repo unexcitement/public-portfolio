@@ -1,0 +1,127 @@
+# ==========================================
+# Portfolio Specific Ignores
+# ==========================================
+# Raw upstream source repositories and staging extracts
+source_repos/
+source_repos/**
+private/
+staging/
+hazard_filter/
+raw/
+extracts/
+
+# ==========================================
+# Secrets, Environment & Credentials
+# Strict prevention against credential leaks
+# ==========================================
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.cert
+*.crt
+*.pfx
+*.p12
+*.kdbx
+id_rsa*
+id_ed25519*
+credentials.json
+client_secret*.json
+service-account*.json
+auth_tokens*
+
+# ==========================================
+# Operating System Files
+# ==========================================
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# ==========================================
+# IDEs & Editor Configuration
+# ==========================================
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+*.bak
+*.tmp
+
+# ==========================================
+# Logs & Diagnostic Dumps
+# ==========================================
+*.log
+logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# ==========================================
+# Web & Full-Stack (Nuxt 3 / Node / Vue / Vite)
+# ==========================================
+node_modules/
+.nuxt/
+.output/
+.nitro/
+dist/
+.cache/
+.npm/
+
+# ==========================================
+# Go Binaries & Caches
+# ==========================================
+bin/
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+
+# ==========================================
+# Infrastructure as Code (OpenTofu / Terraform)
+# ==========================================
+.terraform/
+.tofu/
+*.tfstate
+*.tfstate.*
+*.tfvars
+*.tfvars.json
+!.tfvars.example
+crash.log
+
+# ==========================================
+# Databases & Local State (SQLite / Data stores)
+# ==========================================
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+*.sqlite
+*.sqlite3
+*.dump
+
+# ==========================================
+# Python / Scripting Artifacts
+# ==========================================
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.venv/
+
+# ==========================================
+# Temporary & Scratch
+# ==========================================
+tmp/
+temp/
+scratch/
