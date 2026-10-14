@@ -4,7 +4,7 @@ Welcome to my declassified portfolio. If you are reviewing this repository, you 
 
 This collection has been curated from years of private enterprise builds. Through a process of "Hazard Filtering," I have extracted the pure systemic principles from my work while ruthlessly redacting all proprietary IP and client data to maintain strict data sovereignty. It is the structural engine, minus the live ammo.
 
-As highlighted throughout my strategic planning file named "Content (LinkedIn, Twitter, Dev.to, etc)", I do not just write code; I translate complex, multi-stakeholder bottlenecks into deterministic, machine-executable YAML definitions and high-throughput, event-driven platforms. I build antifragile systems that decouple operational complexity from human time, ensuring absolute data sovereignty and exponential scalability.
+As highlighted throughout my notebook (Used as sources), I do not just write code; I translate complex, multi-stakeholder bottlenecks into deterministic, machine-executable YAML definitions and high-throughput, event-driven platforms. I build antifragile systems that decouple operational complexity from human time, ensuring absolute data sovereignty and exponential scalability.
 
 ---
 
