@@ -1,0 +1,32 @@
+flowchart LR
+    classDef stock fill:#1e293b,stroke:#38bdf8,stroke-width:3px,color:#f8fafc;
+    classDef flow fill:#0f172a,stroke:#a855f7,stroke-width:2px,color:#f8fafc;
+    classDef loop fill:#312e81,stroke:#f59e0b,stroke-width:2px,stroke-dasharray: 5 5,color:#fbbf24;
+
+    SourceTrigger((Interval Trigger Event))
+    InflowTrigger[Inflow: Scheduled Ingestion Rate]
+    StockQueued[Stock: Queued Telemetry Messages]:::stock
+    OutflowDispatch[Outflow: Webhook POST Dispatch Rate]
+
+    StockDelivered[Stock: Published Channel Notifications]:::stock
+    OutflowRead[Outflow: Team Attention & Review Rate]
+
+    SinkArchived((Acknowledged Operational Notification))
+
+    SourceTrigger --> InflowTrigger
+    InflowTrigger --> StockQueued
+    StockQueued --> OutflowDispatch
+    OutflowDispatch --> StockDelivered
+    StockDelivered --> OutflowRead
+    OutflowRead --> SinkArchived
+
+    subgraph Loops["Systems Dynamics & Rate-Limit Loops"]
+        LoopB1["Balancing Loop (B1): Discord Rate-Limit Backoff\n(HTTP 429 Detected -> Inserts Exponential Retry Backoff)"]:::loop
+        LoopR1["Reinforcing Loop (R1): Team Engagement Loop\n(Consistent Ambient Telemetry -> Improves Operational Vigilance)"]:::loop
+    end
+
+    StockQueued -.->|Webhook Density Sensing| LoopB1
+    LoopB1 -.->|Pacing Signal| OutflowDispatch
+
+    StockDelivered -.->|Operational Visibility| LoopR1
+    LoopR1 -.->|Vigilance Vector| OutflowRead

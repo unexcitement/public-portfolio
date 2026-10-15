@@ -1,0 +1,44 @@
+flowchart LR
+    classDef stock fill:#1e293b,stroke:#38bdf8,stroke-width:3px,color:#f8fafc;
+    classDef flow fill:#0f172a,stroke:#a855f7,stroke-width:2px,color:#f8fafc;
+    classDef loop fill:#312e81,stroke:#f59e0b,stroke-width:2px,stroke-dasharray: 5 5,color:#fbbf24;
+
+    SourceTenants((Enterprise Onboarding Demand))
+    InflowProvision[Inflow: Schema Provisioning Rate]
+    StockSchemas[Stock: Active Isolated PostgreSQL Schemas]:::stock
+    OutflowDecommission[Outflow: Tenant Deprovisioning Flow]
+
+    StockConnections[Stock: PostgreSQL Connection Pool Allocation]:::stock
+    OutflowTx[Outflow: Scoped Transaction Discharge Rate]
+
+    StockPolicies[Stock: Synchronized Casbin Policy State]:::stock
+    OutflowPolicySync[Outflow: Redis Watcher Invalidation Flow]
+
+    SinkArchived((Clean Zero-Artifact Termination))
+
+    SourceTenants --> InflowProvision
+    InflowProvision --> StockSchemas
+    StockSchemas --> OutflowDecommission
+    OutflowDecommission --> SinkArchived
+
+    StockSchemas --> StockConnections
+    StockConnections --> OutflowTx
+    OutflowTx --> SinkArchived
+
+    StockPolicies --> OutflowPolicySync
+    OutflowPolicySync --> StockPolicies
+
+    subgraph Loops["Systems Dynamics & Multi-Tenant Equilibrium"]
+        LoopB1["Balancing Loop (B1): Connection Pool Contention Throttle\n(High Pool Allocation -> Queue Tenant Transaction Ingress)"]:::loop
+        LoopB2["Balancing Loop (B2): Schema Migration Pacing\n(Active Transaction Load -> Throttle DDL Migration Waves)"]:::loop
+        LoopR1["Reinforcing Loop (R1): Sovereign Trust Compounding\n(Zero Cross-Tenant Leaks -> Increases High-Compliance Adoption)"]:::loop
+    end
+
+    StockConnections -.->|Pool Saturation Sensing| LoopB1
+    LoopB1 -.->|Pacing Signal| InflowProvision
+
+    StockConnections -.->|Lock Contention Sensing| LoopB2
+    LoopB2 -.->|Migration Delay Signal| StockSchemas
+
+    StockSchemas -.->|Compliance Reputation| LoopR1
+    LoopR1 -.->|Accelerated Adoption| SourceTenants

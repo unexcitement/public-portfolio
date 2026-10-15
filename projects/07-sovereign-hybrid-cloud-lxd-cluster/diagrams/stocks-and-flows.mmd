@@ -1,0 +1,43 @@
+flowchart LR
+    classDef stock fill:#1e293b,stroke:#38bdf8,stroke-width:3px,color:#f8fafc;
+    classDef flow fill:#0f172a,stroke:#a855f7,stroke-width:2px,color:#f8fafc;
+    classDef loop fill:#312e81,stroke:#f59e0b,stroke-width:2px,stroke-dasharray: 5 5,color:#fbbf24;
+
+    SourceOps((OpenTofu State Declarations))
+    InflowApply[Inflow: Terraform Provisioning Velocity]
+    StockInstances[Stock: Running LXD Sovereign Instances]:::stock
+    OutflowDecommission[Outflow: Instance Teardown Rate]
+
+    StockRaft[Stock: Raft Distributed Consensus Log Entries]:::stock
+    OutflowHeartbeat[Outflow: Quorum Synchronization Velocity]
+
+    StockMetrics[Stock: Prometheus Time-Series Samples]:::stock
+    OutflowCompaction[Outflow: Retention Policy Prune Rate]
+
+    SinkTerminated((Clean Instance Destruction))
+
+    SourceOps --> InflowApply
+    InflowApply --> StockInstances
+    StockInstances --> OutflowDecommission
+    OutflowDecommission --> SinkTerminated
+
+    StockInstances --> StockRaft
+    StockRaft --> OutflowHeartbeat
+
+    StockInstances --> StockMetrics
+    StockMetrics --> OutflowCompaction
+
+    subgraph Loops["Systems Dynamics & Infrastructure Resiliency Loops"]
+        LoopB1["Balancing Loop (B1): Quorum Guard Assertion\n(Missing Quorum VPS -> Blocks OpenTofu Plan/Apply)"]:::loop
+        LoopB2["Balancing Loop (B2): WAN Backpressure Shedding\n(Saturated Edge Uplink -> Backs off Non-Critical LXC Calls)"]:::loop
+        LoopR1["Reinforcing Loop (R1): Sovereign Infrastructure Compounding\n(Air-Gapped Secrets & In-Cluster Services -> Mitigates Cloud Vendor Risk)"]:::loop
+    end
+
+    StockRaft -.->|Quorum Health Telemetry| LoopB1
+    LoopB1 -.->|Lockout Signal| InflowApply
+
+    StockInstances -.->|WAN Traffic Intensity| LoopB2
+    LoopB2 -.->|Pacing Signal| OutflowHeartbeat
+
+    StockInstances -.->|Autonomy Expansion| LoopR1
+    LoopR1 -.->|Decoupled Architecture Leverage| SourceOps

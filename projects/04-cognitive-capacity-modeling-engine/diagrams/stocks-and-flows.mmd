@@ -1,0 +1,41 @@
+flowchart LR
+    classDef stock fill:#1e293b,stroke:#38bdf8,stroke-width:3px,color:#f8fafc;
+    classDef flow fill:#0f172a,stroke:#a855f7,stroke-width:2px,color:#f8fafc;
+    classDef loop fill:#312e81,stroke:#f59e0b,stroke-width:2px,stroke-dasharray: 5 5,color:#fbbf24;
+
+    SourceCognitive((Environmental Task Load))
+    InflowLoad[Inflow: Cognitive Demand Influx]
+    StockBandwidth[Stock: Available Cognitive Capacity & Resilience]:::stock
+    OutflowBurnout[Outflow: Cognitive Exhaustion Rate]
+
+    StockTelemetry[Stock: Longitudinal Mood & Synergy Telemetry]:::stock
+    OutflowAnalysis[Outflow: Clinical Synthesis Velocity]
+
+    StockInterventions[Stock: Targeted Environmental Accommodations]:::stock
+    OutflowApplication[Outflow: Remediation Adoption Rate]
+
+    SinkEquilibrium((Adaptive Organizational Equilibrium))
+
+    SourceCognitive --> InflowLoad
+    InflowLoad --> StockBandwidth
+    StockBandwidth --> OutflowBurnout
+    StockBandwidth --> StockTelemetry
+    StockTelemetry --> OutflowAnalysis
+    OutflowAnalysis --> StockInterventions
+    StockInterventions --> OutflowApplication
+    OutflowApplication --> SinkEquilibrium
+
+    subgraph Loops["Systems Dynamics & Metacognitive Homeostasis"]
+        LoopB1["Balancing Loop (B1): Adaptive Workload Regulation\n(Depleted Cognitive Bandwidth -> Triggers Workload Shedding)"]:::loop
+        LoopB2["Balancing Loop (B2): Supervisory Hierarchy Escalation\n(High Distress Telemetry -> Senior Intervention Allocation)"]:::loop
+        LoopR1["Reinforcing Loop (R1): Synergy Compounding\n(Tailored Accommodations -> Expands Longitudinal Cognitive Bandwidth)"]:::loop
+    end
+
+    StockBandwidth -.->|Capacity Depletion Telemetry| LoopB1
+    LoopB1 -.->|Pacing Adjustment| InflowLoad
+
+    StockTelemetry -.->|Threshold Trigger| LoopB2
+    LoopB2 -.->|Supervisory Flow| OutflowAnalysis
+
+    OutflowApplication -.->|Capacity Reconstitution| LoopR1
+    LoopR1 -.->|Capacity Boost| StockBandwidth

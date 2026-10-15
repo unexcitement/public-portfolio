@@ -1,0 +1,44 @@
+flowchart LR
+    classDef stock fill:#1e293b,stroke:#38bdf8,stroke-width:3px,color:#f8fafc;
+    classDef flow fill:#0f172a,stroke:#a855f7,stroke-width:2px,color:#f8fafc;
+    classDef loop fill:#312e81,stroke:#f59e0b,stroke-width:2px,stroke-dasharray: 5 5,color:#fbbf24;
+
+    SourceStreams((Global Video Feed Discovery))
+    InflowCams[Inflow: Camera Onboarding Velocity]
+    StockMonitored[Stock: Active Monitored Geospatial Feeds]:::stock
+    OutflowPrune[Outflow: Dead Stream Pruning Rate]
+
+    StockSnapshots[Stock: Cached Live Video Snapshots]:::stock
+    OutflowSnapshot[Outflow: Snapshot Invalidation & Refresh Flow]
+
+    StockBandwidth[Stock: Host Video Decoding & Network Bandwidth]:::stock
+    OutflowPlayback[Outflow: Concurrent HLS Playback Velocity]
+
+    SinkArchived((Decommissioned Feed Record))
+
+    SourceStreams --> InflowCams
+    InflowCams --> StockMonitored
+    StockMonitored --> OutflowPrune
+    OutflowPrune --> SinkArchived
+
+    StockMonitored --> StockSnapshots
+    StockSnapshots --> OutflowSnapshot
+    OutflowSnapshot --> StockSnapshots
+
+    StockMonitored --> StockBandwidth
+    StockBandwidth --> OutflowPlayback
+
+    subgraph Loops["Systems Dynamics & Surveillance Ingestion Loops"]
+        LoopB1["Balancing Loop (B1): Network & CPU Saturation Guard\n(High Active Stream Playback -> Coalesces Snapshot Refresh Rates)"]:::loop
+        LoopB2["Balancing Loop (B2): Dead Stream Auto-Purge\n(Consecutive FFmpeg Probe Timeouts -> Marks Feed Offline)"]:::loop
+        LoopR1["Reinforcing Loop (R1): Situational Awareness Compounding\n(High Geo-Density of Feeds -> Accelerates Anomaly Detection)"]:::loop
+    end
+
+    StockBandwidth -.->|Network Load Sensing| LoopB1
+    LoopB1 -.->|Pacing Signal| OutflowSnapshot
+
+    StockMonitored -.->|Failure Detection| LoopB2
+    LoopB2 -.->|Offline Prune Flow| OutflowPrune
+
+    StockMonitored -.->|Density of Coverage| LoopR1
+    LoopR1 -.->|Investigation Demand| SourceStreams

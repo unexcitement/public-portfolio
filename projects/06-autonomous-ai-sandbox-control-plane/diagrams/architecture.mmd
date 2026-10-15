@@ -1,0 +1,52 @@
+flowchart TB
+    subgraph ControlPlanePerimeter["OASIS-Powered Multi-Tenant Control Plane"]
+        Operator["Tenant Developer / Agent Orchestrator"]
+        CaddyGateway["Caddy Gateway (Dynamic TLS & API Routing)"]
+        NuxtConsole["Nuxt 3 Sandbox Fleet Manager"]
+        
+        subgraph APICore["Control Plane Core (Go / OASIS)"]
+            PresetEngine["Sandbox Preset Engine (GPU, Tools, CLI, Model Routes)"]
+            QuotaManager["Tenant Resource & Lease Allocator"]
+            SecretsInjector["OpenBao Secrets Broker (Root Key Isolation)"]
+        end
+    end
+
+    subgraph HostHypervisor["Bare-Metal Host Hypervisor Perimeter (01-eds-dedi)"]
+        DaemonManager["LXD 6.x / Docker Engine Supervisor"]
+        
+        subgraph NetworkIsolation["Zero-Egress Network Isolation (DEFCON 0)"]
+            UFWPolicy["UFW DOCKER-USER Drop Rules (WAN Severed)"]
+            EgressBridge["Tailscale / WireGuard Egress Namespace (Whitelisted APIs Only)"]
+        end
+
+        subgraph SandboxFleet["Ephemeral Agent Sandbox Instances"]
+            subgraph Sandbox1["Sandbox Instance: Tenant Alpha"]
+                UnprivLXD1["Unprivileged LXD Container"]
+                AgentRuntime1["Autonomous AI Agent (Claude/OpenAI CLI)"]
+                ZFSStorage1["ZFS CoW Ephemeral Volume"]
+            end
+            
+            subgraph Sandbox2["Sandbox Instance: Tenant Beta"]
+                UnprivLXD2["Unprivileged LXD Container (GPU Passthrough)"]
+                AgentRuntime2["Autonomous AI Agent (Local Ollama / PyTorch)"]
+                ZFSStorage2["ZFS CoW Ephemeral Volume"]
+            end
+        end
+    end
+
+    Operator --> CaddyGateway
+    CaddyGateway --> NuxtConsole
+    NuxtConsole --> APICore
+    APICore --> SecretsInjector
+    APICore --> DaemonManager
+
+    DaemonManager --> NetworkIsolation
+    NetworkIsolation --> UFWPolicy
+    NetworkIsolation --> EgressBridge
+
+    DaemonManager -->|Provision CoW Snapshot| ZFSStorage1
+    DaemonManager -->|Provision CoW Snapshot| ZFSStorage2
+    UFWPolicy --> UnprivLXD1
+    EgressBridge --> UnprivLXD2
+    UnprivLXD1 --> AgentRuntime1
+    UnprivLXD2 --> AgentRuntime2

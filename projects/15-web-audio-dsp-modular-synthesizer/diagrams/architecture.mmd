@@ -1,0 +1,39 @@
+flowchart TB
+    subgraph UIWorkstation["Modular Synth UI Surface (Vue 3 / Vite)"]
+        Operator["Audio Designer / Musician"]
+        Sidebar["Instrument Preset & Module Palette"]
+        WorkflowCanvas["Interactive Modular Node Graph Canvas\n(SynthWorkflow.vue)"]
+    end
+
+    subgraph ClientEngine["Browser Audio Thread & DSP Tier"]
+        AudioCtx["Web Audio API AudioContext (Sample Rate: 48kHz)"]
+        
+        subgraph NodeGraph["Dynamic DSP Node Topology"]
+            VCOGroup["Oscillator Nodes (Sine, Square, Sawtooth, Triangle)"]
+            VCFGroup["BiquadFilter Nodes (Low-Pass, Band-Pass, High-Pass)"]
+            VCAGroup["Gain Nodes & ADSR Envelopes"]
+            Modulators["LFO & WaveShaper Distortion Nodes"]
+            Spatializer["Stereo Panner & Delay Feedback Nodes"]
+        end
+
+        MasterBus["Master Dynamics Compressor & Gain Stage"]
+    end
+
+    subgraph HardwareEgress["Physical Audio Hardware"]
+        DAC["Hardware DAC / Audio Interface Output"]
+        Speakers["Physical Monitors / Headphones"]
+    end
+
+    Operator --> Sidebar
+    Operator --> WorkflowCanvas
+    Sidebar --> WorkflowCanvas
+
+    WorkflowCanvas -->|Dispatches AudioParam Ramps| AudioCtx
+    AudioCtx --> VCOGroup
+    VCOGroup --> VCFGroup
+    VCFGroup --> VCAGroup
+    Modulators -.->|Frequency/Cutoff Modulation| VCFGroup
+    VCAGroup --> Spatializer
+    Spatializer --> MasterBus
+    MasterBus --> DAC
+    DAC --> Speakers

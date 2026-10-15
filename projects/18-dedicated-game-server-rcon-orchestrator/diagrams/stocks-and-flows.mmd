@@ -1,0 +1,44 @@
+flowchart LR
+    classDef stock fill:#1e293b,stroke:#38bdf8,stroke-width:3px,color:#f8fafc;
+    classDef flow fill:#0f172a,stroke:#a855f7,stroke-width:2px,color:#f8fafc;
+    classDef loop fill:#312e81,stroke:#f59e0b,stroke-width:2px,stroke-dasharray: 5 5,color:#fbbf24;
+
+    SourcePlayers((Community Player Influx))
+    InflowJoin[Inflow: Player Connection Rate]
+    StockPlayers[Stock: Active Concurrent Server Players]:::stock
+    OutflowLeave[Outflow: Player Disconnect Velocity]
+
+    StockRCON[Stock: Queued Administrator Commands]:::stock
+    OutflowExec[Outflow: RCON Command Dispatch Rate]
+
+    StockTelemetry[Stock: GameDig Heartbeat Samples]:::stock
+    OutflowLog[Outflow: Metric Archival Velocity]
+
+    SinkArchived((Historical Server Log))
+
+    SourcePlayers --> InflowJoin
+    InflowJoin --> StockPlayers
+    StockPlayers --> OutflowLeave
+    OutflowLeave --> SinkArchived
+
+    StockRCON --> OutflowExec
+    OutflowExec --> StockPlayers
+
+    StockPlayers --> StockTelemetry
+    StockTelemetry --> OutflowLog
+    OutflowLog --> SinkArchived
+
+    subgraph Loops["Systems Dynamics & Game Server Telemetry Loops"]
+        LoopB1["Balancing Loop (B1): RCON Command Flooding Guard\n(High Queue Depth -> Rate-Limits Web Command Ingestion)"]:::loop
+        LoopB2["Balancing Loop (B2): Server Crash Auto-Recovery\n(Zero UDP Telemetry Response -> Triggers Watchdog Process Restart)"]:::loop
+        LoopR1["Reinforcing Loop (R1): High Player Density Network Effect\n(Active Server Status -> Drives Greater Community Influx)"]:::loop
+    end
+
+    StockRCON -.->|Queue Saturation| LoopB1
+    LoopB1 -.->|Throttling Signal| StockRCON
+
+    StockTelemetry -.->|Timeout Sensing| LoopB2
+    LoopB2 -.->|Restart Vector| OutflowExec
+
+    StockPlayers -.->|Community Visibility| LoopR1
+    LoopR1 -.->|Player Population Expansion| SourcePlayers

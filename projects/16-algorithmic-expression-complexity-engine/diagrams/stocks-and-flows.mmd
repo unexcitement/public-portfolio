@@ -1,0 +1,34 @@
+flowchart LR
+    classDef stock fill:#1e293b,stroke:#38bdf8,stroke-width:3px,color:#f8fafc;
+    classDef flow fill:#0f172a,stroke:#a855f7,stroke-width:2px,color:#f8fafc;
+    classDef loop fill:#312e81,stroke:#f59e0b,stroke-width:2px,stroke-dasharray: 5 5,color:#fbbf24;
+
+    SourceInput((Raw Numerical Input))
+    InflowTrigger[Inflow: Operator Equals Action Rate]
+    StockAST[Stock: AST Node Complexity & Expression Depth]:::stock
+    OutflowClear[Outflow: Clear / Reset Discharge Velocity]
+
+    StockHistory[Stock: Immutable Session History Log]:::stock
+    OutflowHistory[Outflow: History Rotation / Eviction Rate]
+
+    SinkSimplified((Zero-State Expression Reset))
+
+    SourceInput --> InflowTrigger
+    InflowTrigger --> StockAST
+    StockAST --> OutflowClear
+    OutflowClear --> SinkSimplified
+
+    StockAST --> StockHistory
+    StockHistory --> OutflowHistory
+    OutflowHistory --> SinkSimplified
+
+    subgraph Loops["Systems Dynamics & Complexity Escalation Loops"]
+        LoopB1["Balancing Loop (B1): Max Recursion / Stack Depth Limiter\n(Depth Ceiling Reached -> Coalesces Operations into Parentheses)"]:::loop
+        LoopR1["Reinforcing Loop (R1): Progressive Obfuscation Compounding\n(Successive '=' Press -> Exponentially Multiplies Subtree Count)"]:::loop
+    end
+
+    StockAST -.->|Tree Depth Sensing| LoopB1
+    LoopB1 -.->|Recursion Pacing Signal| InflowTrigger
+
+    StockAST -.->|Subtree Multiplication Factor| LoopR1
+    LoopR1 -.->|Exponential Complexity Vector| StockAST

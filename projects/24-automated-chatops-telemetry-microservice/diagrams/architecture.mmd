@@ -1,0 +1,21 @@
+flowchart TB
+    subgraph SchedulingLayer["Cron / Event Scheduling Trigger"]
+        CronTimer["Autonomous Interval Timer / Cron Trigger"]
+    end
+
+    subgraph MicroserviceContainer["Ephemeral Microservice Container (Node.js)"]
+        EventLoop["Microservice Execution Loop (index.js)"]
+        TelemetryFetcher["External Telemetry & Fact Fetcher"]
+        PayloadFormatter["Discord Embed Webhook Payload Builder"]
+    end
+
+    subgraph ChatOpsPerimeter["ChatOps & Team Communication Perimeter"]
+        WebhookEndpoint["Discord Webhook HTTPS Gateway"]
+        AuditedChannel["Operational Engineering / Team Channel"]
+    end
+
+    CronTimer --> EventLoop
+    EventLoop --> TelemetryFetcher
+    TelemetryFetcher --> PayloadFormatter
+    PayloadFormatter -->|HTTPS POST Encrypted Webhook| WebhookEndpoint
+    WebhookEndpoint --> AuditedChannel

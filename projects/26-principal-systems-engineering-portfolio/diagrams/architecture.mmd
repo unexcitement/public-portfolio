@@ -1,0 +1,32 @@
+flowchart TB
+    subgraph PrivateIPPerimeter["Private Enterprise Infrastructure (Air-Gapped / Classified)"]
+        SourceRepos["source_repos/ (74 Private Enterprise Codebases & Gitea Mirrors)"]
+        ProprietarySpecs["Classified System Architecture Decisions & Brand IP"]
+    end
+
+    subgraph HazardFilterEngine["Declassification & Hazard Filtering Engine"]
+        HazardFilter["Hazard Filter & Sanitizer\n(Rigorously Redacts Brands, Clients & Hostnames)"]
+        ParadigmExtractor["Architectural Paradigm Extractor\n(Zero-Trust, Event Sourcing, Data Sovereignty)"]
+        DualParadigmSynthesizer["Dual-Paradigm Systems Modeler\n(Traditional Systems + Meadows Stocks & Flows)"]
+    end
+
+    subgraph EphemeralDockerBuild["Ephemeral Container Compilation (Zero Host Dependencies)"]
+        MermaidCLI["Dockerized Mermaid CLI (minlag/mermaid-cli)\n(docker run --rm -v $(pwd):/data ...)"]
+        VectorAssets["Rendered Standalone SVG Vectors"]
+    end
+
+    subgraph PublicShowcase["Public Declassified Portfolio Footprint"]
+        PublicGit["public-portfolio Repository (GitHub / Static Web)"]
+        ExecutiveCatalog["Curated Executive Architecture Catalog"]
+    end
+
+    SourceRepos --> HazardFilter
+    ProprietarySpecs --> HazardFilter
+    HazardFilter --> ParadigmExtractor
+    ParadigmExtractor --> DualParadigmSynthesizer
+
+    DualParadigmSynthesizer -->|Emits .mmd Definitions| MermaidCLI
+    MermaidCLI --> VectorAssets
+    DualParadigmSynthesizer -->|Compiles Sanitized Profiles| ExecutiveCatalog
+    VectorAssets --> PublicGit
+    ExecutiveCatalog --> PublicGit

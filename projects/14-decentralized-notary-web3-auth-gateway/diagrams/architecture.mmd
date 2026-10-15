@@ -1,0 +1,33 @@
+flowchart TB
+    subgraph ClientLayer["User Surface & Passwordless Onboarding"]
+        Signer["Signer / Enterprise Client"]
+        NextApp["Next.js Application Core (:3000)\n(TypeScript / Tailwind CSS)"]
+        MagicSDK["Magic Link Dedicated Wallet SDK\n(DKG Non-Custodial Key Delegation)"]
+    end
+
+    subgraph ServiceLayer["Notary Middleware & Document Engine"]
+        APIRouter["Next.js API Routes (/api/*)"]
+        Hasher["SHA-256 / Keccak-256 Document Hasher"]
+        PrismaService["Prisma Client ORM (Off-Chain Metadata Store)"]
+    end
+
+    subgraph BlockchainLayer["EVM Smart Contract & Settlement Tier"]
+        HardhatEngine["Hardhat EVM Compilation & Deploy Toolchain"]
+        SmartContract["NotaryRegistry.sol Smart Contract\n(Immutable Timestamp & Merkle Root)"]
+        EVMNetwork["EVM Blockchain (Ethereum / Polygon / Base)"]
+        IPFSStore["Decentralized Metadata Archive (IPFS / Arweave)"]
+    end
+
+    Signer --> NextApp
+    NextApp --> MagicSDK
+    MagicSDK <-->|Hardware-Enclave Passwordless Auth| Signer
+
+    NextApp --> APIRouter
+    APIRouter --> Hasher
+    APIRouter --> PrismaService
+
+    Hasher -->|Document Digest| SmartContract
+    MagicSDK -->|EIP-712 Typed Signature| SmartContract
+    HardhatEngine -.->|Contract Compilation & ABI| SmartContract
+    SmartContract --> EVMNetwork
+    SmartContract --> IPFSStore

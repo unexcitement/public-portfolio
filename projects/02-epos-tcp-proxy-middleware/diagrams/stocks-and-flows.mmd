@@ -1,0 +1,46 @@
+flowchart LR
+    classDef stock fill:#1e293b,stroke:#38bdf8,stroke-width:3px,color:#f8fafc;
+    classDef flow fill:#0f172a,stroke:#a855f7,stroke-width:2px,color:#f8fafc;
+    classDef loop fill:#312e81,stroke:#f59e0b,stroke-width:2px,stroke-dasharray: 5 5,color:#fbbf24;
+
+    SourceTills((POS Order Generation))
+    InflowTCP[Inflow: EPOS Print Ingress Rate]
+    StockTCPQueue[Stock: Concurrent TCP Stream Buffer]:::stock
+    OutflowDecode[Outflow: Bit-Image Extraction Velocity]
+
+    StockBitmaps[Stock: In-Memory Raster Bitmaps]:::stock
+    OutflowOCR[Outflow: OCR Analysis Throughput]
+
+    StockOrderItems[Stock: Structured Order Inventory]:::stock
+    OutflowRules[Outflow: Bundle Pricing Computation Flow]
+
+    StockPrintJobs[Stock: Compiled Print Dispatch Queue]:::stock
+    OutflowPrint[Outflow: Hardware Buffer Discharge Rate]
+    
+    SinkPrinter((Thermal Receipt Head Discharge))
+
+    SourceTills --> InflowTCP
+    InflowTCP --> StockTCPQueue
+    StockTCPQueue --> OutflowDecode
+    OutflowDecode --> StockBitmaps
+    StockBitmaps --> OutflowOCR
+    OutflowOCR --> StockOrderItems
+    StockOrderItems --> OutflowRules
+    OutflowRules --> StockPrintJobs
+    StockPrintJobs --> OutflowPrint
+    OutflowPrint --> SinkPrinter
+
+    subgraph Loops["Systemic Feedback Loops & Boundary Controls"]
+        LoopB1["Balancing Loop (B1): Hardware Memory Overflow Protection\n(Printer Buffer Full -> Sleep TCP Read Sockets)"]:::loop
+        LoopB2["Balancing Loop (B2): OCR CPU Throttling\n(High OCR Queue -> Coalesce Graphics Buffers)"]:::loop
+        LoopR1["Reinforcing Loop (R1): Promotional Revenue Acceleration\n(Transparent Bundle Pricing -> Increased Item Velocity)"]:::loop
+    end
+
+    StockPrintJobs -.->|Buffer Depth Telemetry| LoopB1
+    LoopB1 -.->|TCP Pause Signal| InflowTCP
+
+    StockBitmaps -.->|Queue Pressure| LoopB2
+    LoopB2 -.->|Pacing Signal| OutflowDecode
+
+    OutflowRules -.->|Promotional Lift| LoopR1
+    LoopR1 -.->|Order Volume Growth| InflowTCP

@@ -1,0 +1,33 @@
+flowchart LR
+    classDef stock fill:#1e293b,stroke:#38bdf8,stroke-width:3px,color:#f8fafc;
+    classDef flow fill:#0f172a,stroke:#a855f7,stroke-width:2px,color:#f8fafc;
+    classDef loop fill:#312e81,stroke:#f59e0b,stroke-width:2px,stroke-dasharray: 5 5,color:#fbbf24;
+
+    SourceRequests((User Web Traffic))
+    InflowRequests[Inflow: HTTP Request Ingress Velocity]
+    StockQueue[Stock: Active Connection Buffer]:::stock
+    OutflowRoute[Outflow: MVC Controller Processing Rate]
+
+    StockDBPool[Stock: Available MariaDB Connection Slots]:::stock
+    OutflowDB[Outflow: SQL Transaction Execution Velocity]
+
+    SinkRendered((Delivered HTML Page Output))
+
+    SourceRequests --> InflowRequests
+    InflowRequests --> StockQueue
+    StockQueue --> OutflowRoute
+    OutflowRoute --> SinkRendered
+
+    StockDBPool --> OutflowDB
+    OutflowDB --> SinkRendered
+
+    subgraph Loops["Systems Dynamics & Monolith Stability Loops"]
+        LoopB1["Balancing Loop (B1): Database Connection Contention\n(Pool Depletion -> Throttles Controller Concurrency)"]:::loop
+        LoopR1["Reinforcing Loop (R1): Monolithic Simplicity Compounding\n(Zero Network Hops -> Maximizes Developer Iteration Speed)"]:::loop
+    end
+
+    StockDBPool -.->|Connection Headroom Sensing| LoopB1
+    LoopB1 -.->|Pacing Signal| OutflowRoute
+
+    StockQueue -.->|Co-located Codebase Leverage| LoopR1
+    LoopR1 -.->|Developer Productivity| SourceRequests

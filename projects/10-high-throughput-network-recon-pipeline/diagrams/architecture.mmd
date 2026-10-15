@@ -1,0 +1,40 @@
+flowchart TB
+    subgraph TargetSpace["Public Network IPv4 Address Space (WAN)"]
+        CIDRTargets["Target Subnet Blocks (/16 - /24 CIDRs)"]
+        EdgeRouters["Target Network Endpoints & RTSP IP Cameras"]
+    end
+
+    subgraph ShardingPipeline["Concurrent Processing & Sharding Layer"]
+        CIDRExpander["Go CIDR to IPs Generator\n(Bitwise IP Calculation Engine)"]
+        TxtSharder["Go Worker Sharder\n(Deterministic Hash Range Partitioner)"]
+        subgraph WorkerPools["Parallel Go Micro-Worker Fleet"]
+            PingerWorker["Go Pinger (Concurrent Raw ICMP / Fast Ping)"]
+            RouteWorker["Go Route Checker (TCP SYN/ACK Handshake Verifier)"]
+            ScanWorker["Go Port Scanner (Protocol Fingerprint & Banner Grab)"]
+            RTSPScanner["Go RTSP Scanner (Digest Auth & URI Path Probe)"]
+        end
+        DedupEngine["Go RTSP Deduplication & Hash Filter"]
+        Unsharder["Go Unsharder & Stream Coalescer"]
+    end
+
+    subgraph IntelligenceStore["Reconnaissance Ledger Tier"]
+        CleanTargetFile[("Verified Stream Intelligence Dataset\n(JSONL / CSV / SQLite)")]
+        TelemetryLogger["Real-Time Recon Telemetry Stream"]
+    end
+
+    CIDRTargets --> CIDRExpander
+    CIDRExpander --> TxtSharder
+    TxtSharder -->|Distributed Batches| PingerWorker
+    
+    PingerWorker -->|Responsive Host Vector| RouteWorker
+    RouteWorker -->|"Open Media Ports (:554, :8554)"| ScanWorker
+    ScanWorker -->|RTSP Protocol Validated| RTSPScanner
+
+    PingerWorker -.->|ICMP Probes| EdgeRouters
+    RouteWorker -.->|SYN Packets| EdgeRouters
+    RTSPScanner -.->|DESCRIBE Handshake| EdgeRouters
+
+    RTSPScanner --> DedupEngine
+    DedupEngine --> Unsharder
+    Unsharder --> CleanTargetFile
+    Unsharder --> TelemetryLogger

@@ -1,0 +1,50 @@
+flowchart TB
+    subgraph WANIngress["Public Multi-Domain Ingress Tier"]
+        DomainMain["Primary Enterprise Hub (domain.tld)"]
+        DomainConsult["Consulting Surface (consulting.domain.tld)"]
+        DomainDocs["Framework Docs (docs.domain.tld)"]
+        DomainSandbox["Sandbox Control Surface (sandbox.domain.tld)"]
+        
+        ReverseProxy["Global Nginx Edge Proxy (shared-web-network)\n(SSL Termination & SNI Forwarding)"]
+    end
+
+    subgraph ContainerAppliance["Multi-Tenant Application Footprint (Docker Compose)"]
+        subgraph FrontendTier["Nuxt 3 SSR Unified Frontend (:3000)"]
+            HostResolver["Hostname Route Resolver Middleware\n(Inspects Host Header on Ingress)"]
+            
+            subgraph DynamicViews["Dynamic Surface Renderers"]
+                ViewHub["Hub & Capability Showcase"]
+                ViewConsult["Consultancy Service Catalog"]
+                ViewDocs["Technical Framework Specifications"]
+                ViewSandbox["Interactive Architecture Walkthroughs"]
+            end
+        end
+
+        subgraph BackendTier["Node.js / Express API Service (:5000)"]
+            APIGateway["Express API Router (/api/**)"]
+            ContactHandler["Contact Form & Validation Controller"]
+            MailDispatcher["Nodemailer Transactional SMTP Dispatcher"]
+        end
+    end
+
+    subgraph OutboundComms["Encrypted Outbound Communication"]
+        MailRelay["Hardened SMTP Mail Node (Proton / TLS Submission)"]
+        LeadInbox["Audited Client Inquiry Mailbox"]
+    end
+
+    DomainMain --> ReverseProxy
+    DomainConsult --> ReverseProxy
+    DomainDocs --> ReverseProxy
+    DomainSandbox --> ReverseProxy
+
+    ReverseProxy -->|Internal Proxy Pass| HostResolver
+    HostResolver --> ViewHub
+    HostResolver --> ViewConsult
+    HostResolver --> ViewDocs
+    HostResolver --> ViewSandbox
+
+    FrontendTier -->|Internal Nitro Proxy /api/**| APIGateway
+    APIGateway --> ContactHandler
+    ContactHandler --> MailDispatcher
+    MailDispatcher -->|TLS Port 465/587| MailRelay
+    MailRelay --> LeadInbox

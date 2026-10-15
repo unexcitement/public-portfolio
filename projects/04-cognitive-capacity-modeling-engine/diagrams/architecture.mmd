@@ -1,0 +1,53 @@
+flowchart TB
+    subgraph ClientPerimeter["Client & Identity Boundary"]
+        AssessmentTaker["Clinicians / Neurodivergent Users (Assessment Interface)"]
+        OrgAdmin["Clinical Supervisors / Enterprise Leads (Admin Analytics)"]
+        EdgeAuth["OIDC / Magic-Link Token Authenticator"]
+    end
+
+    subgraph ServicePerimeter["Containerized Node.js Application Tier"]
+        ExpressApp["Express MVC Application Core (:3000)"]
+        subgraph Controllers["Domain Controller Cluster"]
+            SurveyCtrl["Synergy Questionnaire Engine"]
+            HierarchyCtrl["Senior/Junior DAG Hierarchy Engine"]
+            AnalyticsCtrl["Capacity & Mood Telemetry Aggregator"]
+            LicenseCtrl["Enterprise License & Quota Enforcer"]
+        end
+        subgraph SessionLayer["State & Session Middleware"]
+            PrismaSessionStore["Prisma Distributed Session Store"]
+            VHostRouter["Virtual Host Tenant Router"]
+        end
+    end
+
+    subgraph DataPerimeter["Relational Persistence Tier"]
+        PrismaORM["Prisma Client ORM (Type-Safe Query Compiler)"]
+        subgraph DatabaseTables["MySQL 8.0 Normalized Schema"]
+            OrgTable[("Orgs & Multi-Tenant Entities")]
+            UserTable[("Users & Tiered Usergroups")]
+            HierarchyTable[("Self-Referential Senior/Junior DAG")]
+            TelemetryTable[("Synergy Responses & Mood Tracker Logs")]
+            LicenseTable[("Enterprise Seats & Licenses")]
+        end
+    end
+
+    AssessmentTaker --> EdgeAuth
+    OrgAdmin --> EdgeAuth
+    EdgeAuth --> VHostRouter
+    VHostRouter --> ExpressApp
+
+    ExpressApp --> SurveyCtrl
+    ExpressApp --> HierarchyCtrl
+    ExpressApp --> AnalyticsCtrl
+    ExpressApp --> LicenseCtrl
+
+    SurveyCtrl --> PrismaORM
+    HierarchyCtrl --> PrismaORM
+    AnalyticsCtrl --> PrismaORM
+    LicenseCtrl --> PrismaORM
+    PrismaSessionStore --> PrismaORM
+
+    PrismaORM --> OrgTable
+    PrismaORM --> UserTable
+    PrismaORM --> HierarchyTable
+    PrismaORM --> TelemetryTable
+    PrismaORM --> LicenseTable

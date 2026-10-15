@@ -1,0 +1,45 @@
+flowchart LR
+    classDef stock fill:#1e293b,stroke:#38bdf8,stroke-width:3px,color:#f8fafc;
+    classDef flow fill:#0f172a,stroke:#a855f7,stroke-width:2px,color:#f8fafc;
+    classDef loop fill:#312e81,stroke:#f59e0b,stroke-width:2px,stroke-dasharray: 5 5,color:#fbbf24;
+
+    SourceNote((MIDI/Keyboard Note Trigger))
+    InflowNote[Inflow: Note-On Velocity]
+    StockVoices[Stock: Active Polyphonic Synthesis Voices]:::stock
+    OutflowRelease[Outflow: Envelope Release & Voice Stealing Rate]
+
+    StockAudioFrames[Stock: Rendered PCM Audio Buffer Frames]:::stock
+    OutflowDAC[Outflow: Hardware DAC Discharge Velocity]
+
+    StockGraphNodes[Stock: Connected Web Audio DSP Nodes]:::stock
+    OutflowDisconnect[Outflow: Node Disposal & GC Flow]
+
+    SinkAcoustic((Physical Acoustic Waveform))
+
+    SourceNote --> InflowNote
+    InflowNote --> StockVoices
+    StockVoices --> OutflowRelease
+    OutflowRelease --> SinkAcoustic
+
+    StockVoices --> StockAudioFrames
+    StockAudioFrames --> OutflowDAC
+    OutflowDAC --> SinkAcoustic
+
+    StockVoices --> StockGraphNodes
+    StockGraphNodes --> OutflowDisconnect
+    OutflowDisconnect --> SinkAcoustic
+
+    subgraph Loops["Systems Dynamics & Real-Time Audio DSP Loops"]
+        LoopB1["Balancing Loop (B1): Voice Stealing Algorithm\n(Voice Ceiling Reached -> Auto-Evicts Oldest Active Note)"]:::loop
+        LoopB2["Balancing Loop (B2): Audio Underrun Buffer Protector\n(Buffer Starvation -> Coalesces Interpolation Calculations)"]:::loop
+        LoopR1["Reinforcing Loop (R1): Harmonious Feedback Resonance\n(Resonant Filter Tuning -> Compounds Acoustic Energy & Volume)"]:::loop
+    end
+
+    StockVoices -.->|Polyphony Headroom| LoopB1
+    LoopB1 -.->|Eviction Vector| OutflowRelease
+
+    StockAudioFrames -.->|Buffer Depth Sensing| LoopB2
+    LoopB2 -.->|Pacing Signal| OutflowDAC
+
+    StockGraphNodes -.->|Feedback Signal Loop| LoopR1
+    LoopR1 -.->|Harmonic Density| StockAudioFrames

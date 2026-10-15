@@ -1,0 +1,52 @@
+flowchart TB
+    subgraph WANEdge["Public Ingress & DNS Perimeter"]
+        PublicTraffic["Public Internet Requests"]
+        NginxIngress["nginx-ingress (10.250.0.158)\nForwardAuth & SSL Termination"]
+        CloudflareEdge["Cloudflare Edge Armor (DDoS / WAF)"]
+    end
+
+    subgraph ClusterRaft["Distributed LXD 6.9 Raft Cluster Perimeter"]
+        subgraph DedicatedDC["Primary Datacenter Node (01-eds-dedi)"]
+            ControlPlane["LXD Control Plane & Raft Leader"]
+            
+            subgraph WorkloadInstances["Isolated LXD Workload Containers"]
+                SSONode["sso-node (Authentik OIDC : 10.250.0.21)"]
+                BaoNode["bao-node (OpenBao KMS : 10.250.0.20)"]
+                MetricsNode["metrics-node (Prometheus/Grafana : 10.250.0.22)"]
+                GiteaNode["gitea-node (Sovereign VCS : 10.250.0.23)"]
+                SemaphoreNode["semaphore-node (Ansible Engine : 10.250.0.25)"]
+                MailNode["mail-node (Stalwart Mail Engine : Dedicated IP)"]
+                GatusMaster["gatus-master (Uptime Probes : 10.250.0.180)"]
+            end
+
+            subgraph EgressPerimeter["Network Namespace Isolation (egress-node : 10.250.0.24)"]
+                ProtonWG["Proton WireGuard Tun (Isolated Netns)"]
+                TailscaleExit["Tailscale Exit Node (Isolated Netns)"]
+            end
+        end
+
+        subgraph QuorumNodes["Hybrid Cloud Quorum Layer (DC VPS)"]
+            VPS00["vps-cloud-quorum-00 (Voting Quorum Only)"]
+            VPS01["vps-cloud-quorum-01 (Voting Quorum Only)"]
+        end
+
+        subgraph EdgeNodes["Home Laboratory Perimeter (Edge Uplink)"]
+            ZNUC["z-nuc (gatus-proxy & Edge Egress)"]
+            ZWS["z-workstation (Ephemeral CI Runner)"]
+        end
+    end
+
+    PublicTraffic --> CloudflareEdge
+    CloudflareEdge --> NginxIngress
+    NginxIngress --> SSONode
+    NginxIngress --> WorkloadInstances
+
+    ControlPlane <-->|"LXD Raft Consensus (TCP :8443)"| VPS00
+    ControlPlane <-->|"LXD Raft Consensus (TCP :8443)"| VPS01
+    ControlPlane <-->|Tailscale Mesh WAN| ZNUC
+    ControlPlane <-->|Tailscale Mesh WAN| ZWS
+
+    WorkloadInstances -.->|OIDC Authentication| SSONode
+    WorkloadInstances -.->|Dynamic Secrets Injection| BaoNode
+    WorkloadInstances -.->|Metrics Scraping| MetricsNode
+    WorkloadInstances -->|Outbound Egress Routing| EgressPerimeter

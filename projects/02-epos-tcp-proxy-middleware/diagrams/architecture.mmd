@@ -1,0 +1,52 @@
+flowchart TB
+    subgraph EdgeNetwork["Physical EPOS Hardware Network (LAN 172.16.0.0/24)"]
+        Till1["EPOS Till 1 (Fixed Station)"]
+        Till2["EPOS Till 2 (Mobile Tablet / Bar)"]
+        TillN["EPOS Till N"]
+    end
+
+    subgraph ProxyGateway["Go EPOS TCP Proxy Appliance"]
+        direction TB
+        subgraph ListenerGroup["Multi-Port TCP Demultiplexer"]
+            Port9101["TCP Listener (:9101)"]
+            Port9102["TCP Listener (:9102)"]
+            Port910N["TCP Listener (:910N)"]
+        end
+
+        subgraph ProtocolPipeline["Zero-Copy Protocol Pipeline"]
+            ByteParser["ESC/POS Byte Stream Streamer"]
+            BitmapDecoder["ESC/POS Bit-Image Rasterizer (ESC * / GS v 0)"]
+            OCRPipeline["In-Memory Tesseract OCR Extraction Engine"]
+            OfferRules["Promotional Bundle Evaluation Engine (menu.json)"]
+            BillCompiler["Itemised ESC/POS Receipt Formatter"]
+        end
+
+        subgraph QueueManager["Rate-Limited Hardware Dispatcher"]
+            AsyncQueue["Buffered Channel Print Queue"]
+            FlowController["TCP Token-Bucket Rate Controller"]
+        end
+    end
+
+    subgraph PhysicalEgress["Hardware Output Perimeter"]
+        ThermalPrinter["Industrial ESC/POS Thermal Printer (172.16.0.11:9100)"]
+        KitchenStation["Kitchen Order Display / Kitchen Thermal Printer"]
+    end
+
+    Till1 -->|Raw ESC/POS Stream| Port9101
+    Till2 -->|Raw ESC/POS Stream| Port9102
+    TillN -->|Raw ESC/POS Stream| Port910N
+
+    Port9101 --> ByteParser
+    Port9102 --> ByteParser
+    Port910N --> ByteParser
+
+    ByteParser -->|Pass-through Stream| AsyncQueue
+    ByteParser -->|Binary Graphics Stream| BitmapDecoder
+    BitmapDecoder -->|In-Memory Monochrome Image| OCRPipeline
+    OCRPipeline -->|Extracted Structured Items| OfferRules
+    OfferRules -->|Discount Adjustments| BillCompiler
+    BillCompiler -->|Formatted Print Job| AsyncQueue
+
+    AsyncQueue --> FlowController
+    FlowController -->|Rate-Limited TCP Dispatch| ThermalPrinter
+    FlowController -->|Raw Kitchen Ticket Dispatch| KitchenStation

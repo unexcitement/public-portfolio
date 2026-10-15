@@ -1,0 +1,42 @@
+flowchart TB
+    subgraph IngressBoundary["WAN / External Perimeter (Zero-Trust Ingress)"]
+        Client["External Webhook Producers / Telemetry Sources"]
+        ReverseProxy["Caddy Edge Ingress (TLS Termination & Rate Limiting)"]
+    end
+
+    subgraph HostBoundary["Host Security Perimeter (01-eds-dedi)"]
+        subgraph ProxyPerimeter["Go Proxy Middleware Service (:8080)"]
+            IngressChan["Non-blocking Buffered Ingress Channel"]
+            WALEngine["WAL Commit Engine (Pessimistic Sync)"]
+            SSEBroadcaster["Thread-Safe SSE Broadcaster (/stream/events)"]
+        end
+
+        subgraph StorageLayer["Immutable Event Storage"]
+            SQLiteWAL[("SQLite WAL Append-Only Ledger (nerve.db)")]
+        end
+
+        subgraph UIBoundary["Presentation & Control Surface (:3000)"]
+            NuxtUI["Nuxt 3 SSR Command Dashboard"]
+            ZodValidator["Zod Runtime Schema Validation"]
+            WarRoom["Human-in-the-Loop Gateway (War Room)"]
+        end
+    end
+
+    subgraph LXDSandboxPerimeter["LXD Hardened Sandbox Perimeter (DEFCON 0 / Zero-Egress)"]
+        direction TB
+        SandboxProfile["OpenTofu Unprivileged LXD Profile"]
+        UFWDrop["UFW DOCKER-USER Drop Rule (WAN Severed)"]
+        ExecutionContainer["Isolated Agent Execution Container"]
+    end
+
+    Client -->|HTTPS POST /api/v1/webhook| ReverseProxy
+    ReverseProxy -->|Loopback TCP| IngressChan
+    IngressChan -->|Sync Write| WALEngine
+    WALEngine -->|Append-Only Commit| SQLiteWAL
+    WALEngine -->|Emit Event| SSEBroadcaster
+    SSEBroadcaster -->|Server-Sent Events| ZodValidator
+    ZodValidator --> NuxtUI
+    NuxtUI --> WarRoom
+    WarRoom -->|Control Plane Command| SandboxProfile
+    SandboxProfile --> UFWDrop
+    UFWDrop --> ExecutionContainer

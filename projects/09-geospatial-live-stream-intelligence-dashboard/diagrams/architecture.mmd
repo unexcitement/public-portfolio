@@ -1,0 +1,45 @@
+flowchart TB
+    subgraph ClientGIS["Operator Surveillance & GIS Surface"]
+        Operator["Operations Analyst / Intelligence Operator"]
+        subgraph NuxtFrontend["Nuxt 3 Dashboard (Tailwind CSS / Leaflet)"]
+            MapCanvas["Leaflet Interactive Geo-Map Canvas"]
+            FilterPanel["Tag, Status & Alert Filter Sidebar"]
+            VideoPlayer["HLS.js / HTML5 Video Player Modal"]
+        end
+    end
+
+    subgraph ServiceAppliance["Containerized Nuxt 3 / Nitro Server"]
+        NitroServer["Nitro Server Engine (:3000)"]
+        
+        subgraph IngestionPipeline["Media Extraction & Snapshot Pipeline"]
+            URLParser["Stream URL Classifier (m3u8, YT, RTSP, Web)"]
+            FFmpegWorker["Integrated FFmpeg Frame Extractor\n(Native .m3u8 Snapshot Engine)"]
+            MetaScraper["OpenGraph & Metadata Fetcher"]
+        end
+
+        subgraph LocalStore["Lightweight Edge Datastore"]
+            SQLiteDB[("SQLite Asset Datastore (Streams, Geo-Coords, Tags)")]
+            SnapshotCache[("Local File Cache (WebP / JPEG Snapshots)")]
+        end
+    end
+
+    subgraph ExternalFeeds["External Video & Geodata Streams"]
+        OSMTiles["OpenStreetMap Nominatim & Tile Servers"]
+        LiveCams["Public & Private HLS (.m3u8) Video Feeds"]
+        EmbedFeeds["External RTSP / Video Feeds"]
+    end
+
+    Operator --> NuxtFrontend
+    MapCanvas <-->|Tile Ingestion| OSMTiles
+    
+    NuxtFrontend -->|Asset Management & Queries| NitroServer
+    NitroServer --> SQLiteDB
+
+    NitroServer --> URLParser
+    URLParser -->|Raw Live Stream| FFmpegWorker
+    URLParser -->|Metadata Query| MetaScraper
+    
+    FFmpegWorker --> LiveCams
+    FFmpegWorker --> SnapshotCache
+    SnapshotCache --> NuxtFrontend
+    VideoPlayer <-->|Direct HLS Stream| LiveCams

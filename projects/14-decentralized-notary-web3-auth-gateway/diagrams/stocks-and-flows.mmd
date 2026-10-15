@@ -1,0 +1,41 @@
+flowchart LR
+    classDef stock fill:#1e293b,stroke:#38bdf8,stroke-width:3px,color:#f8fafc;
+    classDef flow fill:#0f172a,stroke:#a855f7,stroke-width:2px,color:#f8fafc;
+    classDef loop fill:#312e81,stroke:#f59e0b,stroke-width:2px,stroke-dasharray: 5 5,color:#fbbf24;
+
+    SourceDocs((Document Ingestion Influx))
+    InflowUpload[Inflow: Document Hashing Rate]
+    StockPending[Stock: Uncommitted Cryptographic Digests]:::stock
+    OutflowBroadcast[Outflow: Smart Contract Inscription Velocity]
+
+    StockMempool[Stock: In-Flight Mempool Transactions]:::stock
+    OutflowMine[Outflow: Block Confirmation Velocity]
+
+    StockProofs[Stock: Immutable On-Chain Notary Proofs]:::stock
+    OutflowVerify[Outflow: Public Proof Verification Flow]
+
+    SinkVerified((Tamper-Evident Historical Proof))
+
+    SourceDocs --> InflowUpload
+    InflowUpload --> StockPending
+    StockPending --> OutflowBroadcast
+    OutflowBroadcast --> StockMempool
+    StockMempool --> OutflowMine
+    OutflowMine --> StockProofs
+    StockProofs --> OutflowVerify
+    OutflowVerify --> SinkVerified
+
+    subgraph Loops["Systems Dynamics & Cryptographic Consensus Loops"]
+        LoopB1["Balancing Loop (B1): Gas Price Elasticity Throttle\n(High Gas Volatility -> Batches Document Digests into Merkle Trees)"]:::loop
+        LoopB2["Balancing Loop (B2): Blockchain Finality Watchdog\n(Unconfirmed Transactions -> Re-broadcasts with Aggressive Tip)"]:::loop
+        LoopR1["Reinforcing Loop (R1): Immutable Trust Network Effect\n(Accumulated Verified Proofs -> Broadens Institutional Reliance)"]:::loop
+    end
+
+    StockMempool -.->|Gas Price Sensing| LoopB1
+    LoopB1 -.->|Batching Factor| OutflowBroadcast
+
+    StockMempool -.->|In-Flight Latency| LoopB2
+    LoopB2 -.->|Gas Escalation| OutflowMine
+
+    StockProofs -.->|Auditable Integrity| LoopR1
+    LoopR1 -.->|Enterprise Client Expansion| SourceDocs

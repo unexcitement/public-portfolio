@@ -1,0 +1,44 @@
+flowchart TB
+    subgraph CommunityTouchpoints["Community Stakeholders & Beneficiaries"]
+        Beneficiary["Local Families / Supported Interns"]
+        Volunteer["Volunteers & Job Coaches"]
+        Donor["Council / Grant Funding Bodies"]
+        WebPortal["Enterprise Outreach Portal (EJS / CSS)"]
+    end
+
+    subgraph ServiceEngine["Node.js Application Layer (:3000)"]
+        Router["Express Application Controller"]
+        
+        subgraph FunctionalModules["Core Social Enterprise Modules"]
+            MealDistribution["Food Program & Meal Delivery Dispatcher"]
+            InternshipHub["Supported Internship Coaching & Hours Tracker"]
+            ProjectGallery["Community Initiatives & Activity Showcase"]
+            InquiryGateway["Beneficiary Intake & Volunteer Application Router"]
+        end
+
+        subgraph LocalStore["Relational Store"]
+            DB[("MariaDB Datastore\n(Placements, Volunteer Logs, Meal Distribution Ledger)")]
+        end
+    end
+
+    subgraph PartnerPerimeter["Partner Ecosystem (Colleges / Housing Trusts)"]
+        PartnerHousing["Local Housing Trust (Funding Partner)"]
+        PartnerCollege["Regional College (Internship Provider)"]
+    end
+
+    Beneficiary --> WebPortal
+    Volunteer --> WebPortal
+    Donor --> WebPortal
+    WebPortal --> Router
+
+    Router --> MealDistribution
+    Router --> InternshipHub
+    Router --> ProjectGallery
+    Router --> InquiryGateway
+
+    MealDistribution --> DB
+    InternshipHub --> DB
+    InquiryGateway --> DB
+
+    PartnerHousing <-->|Grant Audit Telemetry| WebPortal
+    PartnerCollege <-->|Internship Verification| InternshipHub

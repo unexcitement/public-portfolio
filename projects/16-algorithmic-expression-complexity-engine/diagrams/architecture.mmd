@@ -1,0 +1,30 @@
+flowchart TB
+    subgraph UIClient["Client Interaction Surface (Vue 3 / Tailwind v4)"]
+        User["User / Evaluator"]
+        Keypad["Virtual Numeric & Operator Keypad"]
+        Display["Active Expression & History Viewport"]
+    end
+
+    subgraph CoreEngine["Algorithmic Complexity Core (TypeScript)"]
+        LexerParser["Expression Lexer & AST Parser"]
+        
+        subgraph ComplicationStrategies["Recursive Mutation Strategies"]
+            AddSplit["Addition Splitter: x -> (a + b)"]
+            SubSplit["Subtraction Expander: x -> (c - d)"]
+            FactorMul["Factor Multiplier: x -> (y * z)"]
+            ChainOp["Chained Operator Weaver"]
+            ParenthesesNester["Nested Parentheses Injector"]
+        end
+
+        HistoryStore["Session History Immutability Store"]
+        EvaluationVerifier["Sanity Check: Deterministic Solver (eval == original)"]
+    end
+
+    User --> Keypad
+    Keypad --> LexerParser
+    LexerParser --> EvaluationVerifier
+    
+    EvaluationVerifier --> ComplicationStrategies
+    ComplicationStrategies --> Display
+    ComplicationStrategies --> HistoryStore
+    HistoryStore --> Display
