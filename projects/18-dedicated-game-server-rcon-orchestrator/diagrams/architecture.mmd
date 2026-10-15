@@ -1,0 +1,38 @@
+flowchart TB
+    subgraph ClientPerimeter["Community & Admin Web Perimeter"]
+        GameAdmin["Server Administrator / Community Lead"]
+        WebDashboard["Web Portal & RCON Command Center (EJS / Bootstrap)"]
+    end
+
+    subgraph OrchestratorGateway["Node.js Application Tier (:3000)"]
+        ExpressCore["Express Server & Session Controller"]
+        AuthValidator["bcrypt + Session Validator"]
+        
+        subgraph ProtocolBridges["Dedicated Protocol Bridges"]
+            RCONBridge["TCP RCON Socket Bridge\n(project-zomboid-rcon / rcon)"]
+            GameDigProber["UDP GameDig Telemetry Prober\n(Server Status, Latency, Player Roster)"]
+        end
+
+        subgraph LocalStore["Persistence Layer"]
+            MariaDB[("MariaDB Datastore\n(Users, Command Audit Logs, Server Configs)")]
+        end
+    end
+
+    subgraph GameServerHost["Dedicated Game Server Host (Isolated LAN / WAN)"]
+        DedicatedGame["Dedicated Game Server Engine (Project Zomboid / Source Engine)"]
+        RCONSocket["Internal TCP RCON Port (e.g., :27015)"]
+        QuerySocket["UDP Query Port (e.g., :16261)"]
+    end
+
+    GameAdmin --> WebDashboard
+    WebDashboard --> ExpressCore
+    ExpressCore --> AuthValidator
+    AuthValidator --> MariaDB
+
+    ExpressCore --> RCONBridge
+    ExpressCore --> GameDigProber
+
+    GameDigProber <-->|UDP A2S_INFO Queries| QuerySocket
+    RCONBridge <-->|Authenticated TCP Commands| RCONSocket
+    QuerySocket --> DedicatedGame
+    RCONSocket --> DedicatedGame

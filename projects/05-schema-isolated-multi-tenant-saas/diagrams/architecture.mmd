@@ -1,0 +1,49 @@
+flowchart TB
+    subgraph EdgePerimeter["Edge Routing & TLS Ingress Tier"]
+        TenantA["tenant-a.saasdomain.tld"]
+        TenantB["tenant-b.saasdomain.tld"]
+        CustomDomain["app.customer.tld (Custom CNAME)"]
+        SuperAdmin["admin.saasdomain.tld"]
+        
+        CaddyIngress["Caddy Reverse Proxy\n(On-Demand TLS + Wildcard Routing)"]
+    end
+
+    subgraph AppTier["Application & API Cluster"]
+        NuxtApp["Nuxt 3 SSR Application\n(Marketing, Super-Admin & Tenant Surfaces)"]
+        
+        subgraph GoAPIService["Go API Core Service (oasis-core)"]
+            TenantResolver["Tenant Resolution Middleware\n(Host Header -> Tenant UUID)"]
+            CasbinRBAC["Casbin v3 RBAC Engine\n(Domain-Scoped Permissions)"]
+            TxManager["Tenant Transaction Coordinator\n(SET LOCAL search_path = tenant_UUID)"]
+            EntORM["Ent ORM Layer (Type-Safe Schema Querying)"]
+        end
+    end
+
+    subgraph DataSovereigntyTier["Isolated Persistence & Cache Cluster"]
+        RedisCluster[("Redis Cluster\n(Casbin Policy Sync & Redis Watcher)")]
+        
+        subgraph PostgreSQLCluster["PostgreSQL Multi-Tenant Database"]
+            PublicSchema[("public Schema: Tenants, Global Users, Audit Logs")]
+            TenantSchemaA[("tenant_a8f9... Schema: Isolated Domain Data")]
+            TenantSchemaB[("tenant_c41e... Schema: Isolated Domain Data")]
+            TenantSchemaN[("tenant_... Schema: Isolated Domain Data")]
+        end
+    end
+
+    TenantA --> CaddyIngress
+    TenantB --> CaddyIngress
+    CustomDomain --> CaddyIngress
+    SuperAdmin --> CaddyIngress
+
+    CaddyIngress -->|SSR Web Surface| NuxtApp
+    CaddyIngress -->|REST API /api/*| TenantResolver
+
+    TenantResolver --> CasbinRBAC
+    CasbinRBAC <-->|Policy Change Pub/Sub| RedisCluster
+    CasbinRBAC --> TxManager
+    TxManager --> EntORM
+
+    EntORM --> PublicSchema
+    EntORM -->|Scoped Isolation| TenantSchemaA
+    EntORM -->|Scoped Isolation| TenantSchemaB
+    EntORM -->|Scoped Isolation| TenantSchemaN

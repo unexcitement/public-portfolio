@@ -1,0 +1,42 @@
+flowchart LR
+    classDef stock fill:#1e293b,stroke:#38bdf8,stroke-width:3px,color:#f8fafc;
+    classDef flow fill:#0f172a,stroke:#a855f7,stroke-width:2px,color:#f8fafc;
+    classDef loop fill:#312e81,stroke:#f59e0b,stroke-width:2px,stroke-dasharray: 5 5,color:#fbbf24;
+
+    SourceRequests((Agent Dispatch Trigger))
+    InflowSpawn[Inflow: Sandbox Instantiation Rate]
+    StockActive[Stock: Active Isolated Agent Sandboxes]:::stock
+    OutflowTeardown[Outflow: Automated Teardown Flow]
+
+    StockCompute[Stock: Host GPU / CPU Compute Inventory]:::stock
+    OutflowCompute[Outflow: Token & Inference Burn Rate]
+
+    StockStorage[Stock: ZFS Ephemeral Volume Allocations]:::stock
+    OutflowStorage[Outflow: Snapshot Pruning Velocity]
+
+    SinkTerminated((Clean Container Destruction))
+
+    SourceRequests --> InflowSpawn
+    InflowSpawn --> StockActive
+    StockActive --> OutflowTeardown
+    OutflowTeardown --> SinkTerminated
+
+    StockCompute --> OutflowCompute
+    StockActive --> StockStorage
+    StockStorage --> OutflowStorage
+    OutflowStorage --> SinkTerminated
+
+    subgraph Loops["Systems Dynamics & Containment Feedback Loops"]
+        LoopB1["Balancing Loop (B1): Host Capacity Quota Enforcer\n(Depleted Compute/ZFS -> Throttles New Sandbox Spawns)"]:::loop
+        LoopB2["Balancing Loop (B2): Ephemeral Lease Expiry Watchdog\n(High Active Lifetime -> Auto-Demolishes Idle Containers)"]:::loop
+        LoopR1["Reinforcing Loop (R1): Autonomous Task Velocity\n(Instant Pre-warmed Sandboxes -> Accelerates Task Completion)"]:::loop
+    end
+
+    StockCompute -.->|Capacity Headroom| LoopB1
+    LoopB1 -.->|Backpressure Signal| InflowSpawn
+
+    StockActive -.->|Lease TTL Monitor| LoopB2
+    LoopB2 -.->|Reclaim Vector| OutflowTeardown
+
+    OutflowTeardown -.->|Recycled Hardware Capacity| LoopR1
+    LoopR1 -.->|Expands Pipeline Throughput| SourceRequests

@@ -1,0 +1,43 @@
+flowchart LR
+    classDef stock fill:#1e293b,stroke:#38bdf8,stroke-width:3px,color:#f8fafc;
+    classDef flow fill:#0f172a,stroke:#a855f7,stroke-width:2px,color:#f8fafc;
+    classDef loop fill:#312e81,stroke:#f59e0b,stroke-width:2px,stroke-dasharray: 5 5,color:#fbbf24;
+
+    SourceHardware((Raw Bare-Metal & Edge Hardware))
+    InflowPrep[Inflow: Pre-Flight Verification Rate]
+    StockPrepared[Stock: Validated Unclustered Host Nodes]:::stock
+    OutflowJoin[Outflow: Trust Handshake & Cluster Join Velocity]
+
+    StockCluster[Stock: Federated Active LXD Cluster Nodes]:::stock
+    OutflowFailure[Outflow: Node Offline / Partition Rate]
+
+    StockCapacity[Stock: Cluster Compute & Storage Pool Inventory]:::stock
+    OutflowContainer[Outflow: Workload Instance Allocation Velocity]
+
+    SinkActive((Resilient Distributed Workload Execution))
+
+    SourceHardware --> InflowPrep
+    InflowPrep --> StockPrepared
+    StockPrepared --> OutflowJoin
+    OutflowJoin --> StockCluster
+    StockCluster --> OutflowFailure
+    OutflowFailure --> StockPrepared
+
+    StockCluster --> StockCapacity
+    StockCapacity --> OutflowContainer
+    OutflowContainer --> SinkActive
+
+    subgraph Loops["Systems Dynamics & Cluster Orchestration Loops"]
+        LoopB1["Balancing Loop (B1): Network Port Pre-Flight Check\n(Port Unreachable -> Halts Cluster Provisioning Before Corruption)"]:::loop
+        LoopB2["Balancing Loop (B2): Heartbeat Partition Detection\n(Inter-Node Latency Spike -> Demotes Node to Non-Voting Member)"]:::loop
+        LoopR1["Reinforcing Loop (R1): Horizontal Elastic Scaling\n(Automated Scripted Joins -> Accelerates Cluster Capacity Onboarding)"]:::loop
+    end
+
+    StockPrepared -.->|Port Diagnostic Telemetry| LoopB1
+    LoopB1 -.->|Validation Gate| OutflowJoin
+
+    StockCluster -.->|WAN Mesh Latency| LoopB2
+    LoopB2 -.->|Quorum Safety Vector| OutflowFailure
+
+    StockCapacity -.->|Available Headroom| LoopR1
+    LoopR1 -.->|Cluster Expansion Demand| SourceHardware

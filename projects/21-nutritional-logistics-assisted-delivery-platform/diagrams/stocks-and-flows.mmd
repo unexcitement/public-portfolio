@@ -1,0 +1,41 @@
+flowchart LR
+    classDef stock fill:#1e293b,stroke:#38bdf8,stroke-width:3px,color:#f8fafc;
+    classDef flow fill:#0f172a,stroke:#a855f7,stroke-width:2px,color:#f8fafc;
+    classDef loop fill:#312e81,stroke:#f59e0b,stroke-width:2px,stroke-dasharray: 5 5,color:#fbbf24;
+
+    SourceResidents((Vulnerable Citizen Meal Requests))
+    InflowOrders[Inflow: Order Intake Velocity]
+    StockOrders[Stock: Pending Daily Meal Orders]:::stock
+    OutflowPrep[Outflow: Kitchen Meal Preparation Rate]
+
+    StockHotMeals[Stock: Prepared Hot Meals Ready for Dispatch]:::stock
+    OutflowTransit[Outflow: Driver Route Dispatch Velocity]
+
+    StockInTransit[Stock: In-Transit Meals on Road]:::stock
+    OutflowHandover[Outflow: Doorstep Delivery Handover Rate]
+
+    SinkDelivered((Nourished Citizen Welfare State))
+
+    SourceResidents --> InflowOrders
+    InflowOrders --> StockOrders
+    StockOrders --> OutflowPrep
+    OutflowPrep --> StockHotMeals
+    StockHotMeals --> OutflowTransit
+    OutflowTransit --> StockInTransit
+    StockInTransit --> OutflowHandover
+    OutflowHandover --> SinkDelivered
+
+    subgraph Loops["Systems Dynamics & Logistics Resilience Loops"]
+        LoopB1["Balancing Loop (B1): Kitchen Thermal Holding Capacity\n(Hot Meals Stock High -> Throttles Outflow from Kitchen Batch)"]:::loop
+        LoopB2["Balancing Loop (B2): Delivery Transit Time Ceiling\n(Hot Food Cold-Drop Watchdog -> Limits Max Driver Route Stops)"]:::loop
+        LoopR1["Reinforcing Loop (R1): Municipal Service Dependability\n(Timely Nutritional Delivery -> Expands Community Welfare Outcomes)"]:::loop
+    end
+
+    StockHotMeals -.->|Holding Heat Window| LoopB1
+    LoopB1 -.->|Pacing Signal| OutflowPrep
+
+    StockInTransit -.->|Elapsed Route Time| LoopB2
+    LoopB2 -.->|Route Cap| OutflowTransit
+
+    SinkDelivered -.->|Welfare Stability| LoopR1
+    LoopR1 -.->|Program Expansion| SourceResidents

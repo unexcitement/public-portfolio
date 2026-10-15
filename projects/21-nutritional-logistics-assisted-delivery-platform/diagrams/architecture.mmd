@@ -1,0 +1,40 @@
+flowchart TB
+    subgraph RecipientLayer["Client & Community Interface"]
+        Caregiver["Caregivers / Municipal Case Workers"]
+        Recipient["Vulnerable Citizens / Phone-in Coordinators"]
+        WebPortal["Web Portal & Menu Selection UI (EJS / Bootstrap)"]
+    end
+
+    subgraph LogisticsCore["Express Logistics Engine (:3000)"]
+        Router["Express Dispatch Controller"]
+        Validator["Dietary & Order Validator"]
+        
+        subgraph Subsystems["Fulfillment Subsystems"]
+            MenuMatrix["Rotating Menu Scheduler (50+ Monthly Dietary Rules)"]
+            DriverRouter["Driver Route & Zone Dispatch Coordinator"]
+        end
+
+        subgraph LocalStore["Relational Persistence"]
+            DB[("MariaDB Datastore\n(Orders, Client Dietary Profiles, Route Manifests)")]
+        end
+    end
+
+    subgraph PhysicalExecution["Field Execution Perimeter"]
+        KitchenStation["Central Preparation Kitchens"]
+        MobileDrivers["Volunteer & Dedicated Driver Fleet"]
+        Doorstep["End Recipient Handover Verification"]
+    end
+
+    Caregiver --> WebPortal
+    Recipient --> WebPortal
+    WebPortal --> Router
+    Router --> Validator
+    Validator --> MenuMatrix
+    MenuMatrix --> DB
+    
+    MenuMatrix --> KitchenStation
+    Router --> DriverRouter
+    DriverRouter --> MobileDrivers
+    KitchenStation --> MobileDrivers
+    MobileDrivers --> Doorstep
+    Doorstep -.->|Proof of Delivery Telemetry| Router

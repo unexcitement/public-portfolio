@@ -1,0 +1,36 @@
+flowchart TB
+    subgraph BrowserClient["Client Browser Tier"]
+        EndUser["Web Browser Client"]
+        HTMLResponse["Server-Rendered HTML5 & CSS"]
+    end
+
+    subgraph NodeAppliance["Express Monolithic Server (:3000)"]
+        subgraph MiddlewarePipeline["HTTP Request Middleware Stack"]
+            BodyParser["Body Parser (JSON & URL-Encoded : 50MB Limits)"]
+            SessionAuth["Session Middleware (express-session / bcrypt)"]
+            Validator["Input Sanitizer (express-validator)"]
+        end
+
+        subgraph MVCLayer["MVC Application Layer"]
+            Router["Express Route Dispatcher"]
+            Controllers["Domain Controllers"]
+            EJSEngine["EJS Templating Engine (Layout Inheritance)"]
+        end
+
+        PoolManager["MariaDB Connection Pool"]
+    end
+
+    subgraph PersistenceTier["Relational Persistence Layer"]
+        MariaDBInstance[("MariaDB Relational Database\n(ACID Tables & Relational Keys)")]
+    end
+
+    EndUser -->|HTTP Request| BodyParser
+    BodyParser --> SessionAuth
+    SessionAuth --> Validator
+    Validator --> Router
+    Router --> Controllers
+    Controllers <-->|Pooled SQL Queries| PoolManager
+    PoolManager <--> MariaDBInstance
+    Controllers --> EJSEngine
+    EJSEngine --> HTMLResponse
+    HTMLResponse --> EndUser

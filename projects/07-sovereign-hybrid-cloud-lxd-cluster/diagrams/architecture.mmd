@@ -1,0 +1,52 @@
+flowchart TB
+    subgraph WANEdge["Public Ingress & DNS Perimeter"]
+        PublicTraffic["Public Internet Requests"]
+        NginxIngress["Ingress proxy (Nginx)\nForwardAuth & SSL Termination"]
+        CloudflareEdge["Cloudflare Edge Armor (DDoS / WAF)"]
+    end
+
+    subgraph ClusterRaft["Distributed LXD 6.9 Raft Cluster Perimeter"]
+        subgraph DedicatedDC["Primary Datacenter Node (Primary bare-metal host)"]
+            ControlPlane["LXD Control Plane & Raft Leader"]
+            
+            subgraph WorkloadInstances["Isolated LXD Workload Containers"]
+                SSONode["Identity provider (Authentik OIDC)"]
+                BaoNode["Secrets manager (OpenBao KMS)"]
+                MetricsNode["Metrics & dashboards (Prometheus/Grafana)"]
+                GiteaNode["Self-hosted Git (Gitea)"]
+                SemaphoreNode["Automation runner (Ansible Semaphore)"]
+                MailNode["Mail server (Stalwart, own public address)"]
+                GatusMaster["Uptime monitor (Gatus)"]
+            end
+
+            subgraph EgressPerimeter["Network Namespace Isolation (Egress gateway)"]
+                ProtonWG["Proton WireGuard Tun (Isolated Netns)"]
+                TailscaleExit["Tailscale Exit Node (Isolated Netns)"]
+            end
+        end
+
+        subgraph QuorumNodes["Hybrid Cloud Quorum Layer (DC VPS)"]
+            VPS00["Cloud quorum voter A (Voting Quorum Only)"]
+            VPS01["Cloud quorum voter B (Voting Quorum Only)"]
+        end
+
+        subgraph EdgeNodes["Home Laboratory Perimeter (Edge Uplink)"]
+            ZNUC["Edge mini-PC (uptime probe relay & Edge Egress)"]
+            ZWS["Edge workstation (Ephemeral CI Runner)"]
+        end
+    end
+
+    PublicTraffic --> CloudflareEdge
+    CloudflareEdge --> NginxIngress
+    NginxIngress --> SSONode
+    NginxIngress --> WorkloadInstances
+
+    ControlPlane <-->|"LXD Raft Consensus (TCP :8443)"| VPS00
+    ControlPlane <-->|"LXD Raft Consensus (TCP :8443)"| VPS01
+    ControlPlane <-->|Tailscale Mesh WAN| ZNUC
+    ControlPlane <-->|Tailscale Mesh WAN| ZWS
+
+    WorkloadInstances -.->|OIDC Authentication| SSONode
+    WorkloadInstances -.->|Dynamic Secrets Injection| BaoNode
+    WorkloadInstances -.->|Metrics Scraping| MetricsNode
+    WorkloadInstances -->|Outbound Egress Routing| EgressPerimeter

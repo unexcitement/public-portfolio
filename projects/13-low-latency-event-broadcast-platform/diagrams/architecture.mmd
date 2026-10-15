@@ -1,0 +1,41 @@
+flowchart TB
+    subgraph BroadcastIngress["Media Ingest & Field Coverage Boundary"]
+        FieldBroadcasters["Remote Event Broadcasters / RTMP Encoders"]
+        MediaGateway["Edge Media Ingest Server (RTMP / SRT)"]
+    end
+
+    subgraph PlatformAppliance["Containerized Broadcast Platform (Docker Compose)"]
+        subgraph WebTier["Express Web Application Tier (:3000)"]
+            Router["Express MVC Controller & Auth Middleware"]
+            SessionManager["bcrypt + express-session Validator"]
+            EJSViews["Dynamic EJS Presentation & Player Views"]
+        end
+
+        subgraph MediaTranscoder["HLS Transcoder & Segmenter Pipeline"]
+            FFmpegMuxer["FFmpeg Live Segmenter (Adaptive Bitrate Muxer)"]
+            HLSChunks["Ephemeral HLS Segment Cache (.ts / .m3u8)"]
+        end
+
+        subgraph DBTier["Persistence Tier"]
+            MariaDB[("MariaDB Relational Store\n(User Accounts, Broadcast Schedules, Logs)")]
+            MailNode["Nodemailer Transactional Event Notification"]
+        end
+    end
+
+    subgraph ViewerPerimeter["Global Viewer Distribution (Edge CDN)"]
+        GlobalViewers["Global Viewers / End-User Devices"]
+        EdgeDistribution["Edge Caching Network (HLS Stream Fanout)"]
+    end
+
+    FieldBroadcasters -->|Raw Stream Ingest| MediaGateway
+    MediaGateway --> FFmpegMuxer
+    FFmpegMuxer --> HLSChunks
+
+    Router --> SessionManager
+    SessionManager --> MariaDB
+    Router --> EJSViews
+    Router --> MailNode
+
+    HLSChunks --> EdgeDistribution
+    EJSViews --> EdgeDistribution
+    EdgeDistribution --> GlobalViewers

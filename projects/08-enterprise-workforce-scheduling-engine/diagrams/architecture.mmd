@@ -1,0 +1,47 @@
+flowchart TB
+    subgraph ClientDevices["Client Tier (Phone-First PWA & Desktop)"]
+        MobileStaff["Staff Mobile Interface (PhoneWeek / Ready Shifts)"]
+        ManagerDesktop["Manager Desktop Grid (ShiftSheet / Rota Control)"]
+    end
+
+    subgraph ContainerPerimeter["Hardened Container Perimeter (Non-Root UID 10001)"]
+        subgraph APIServer["FastAPI Application Server (Uvicorn Worker :8183)"]
+            StaticMount["React 19 / Vite Static Asset Server"]
+            CSRFAuth["scrypt Auth & Sliding Session Validator"]
+            RevisionGuard["Optimistic Concurrency Guard (Revision 409/428)"]
+            ScheduleEngine["Shift Allocation & Minute-Grid Computation"]
+            ExportService["Headless Playwright & Spreadsheet Compiler"]
+        end
+
+        subgraph HeadlessWorker["Embedded Headless Chrome (Playwright)"]
+            ChromiumPDF["Headless Chromium Renderer\n(Print-Exact PDF Generation)"]
+        end
+
+        subgraph StorageIsolation["Dual-Database Physical Isolation"]
+            RotaDB[("rota.sqlite3\n(Business Schedules, Rates, Presets)")]
+            AuthDB[("auth.sqlite3\n(Hashed Sessions, Credentials, Audit Logs)")]
+        end
+    end
+
+    subgraph IngressGateway["Ingress & Deployment Perimeter"]
+        CaddyProxy["Caddy Edge Reverse Proxy (Loopback Only 127.0.0.1:8183)"]
+        TailscaleTunnel["Tailscale Secure Mesh Ingress"]
+        BackupEngine["Automated Daily & Pre-Delete Snapshot Daemon"]
+    end
+
+    MobileStaff --> TailscaleTunnel
+    ManagerDesktop --> TailscaleTunnel
+    TailscaleTunnel --> CaddyProxy
+    CaddyProxy --> StaticMount
+    CaddyProxy --> CSRFAuth
+
+    CSRFAuth --> RevisionGuard
+    RevisionGuard --> ScheduleEngine
+    ScheduleEngine --> RotaDB
+    CSRFAuth --> AuthDB
+
+    ScheduleEngine --> ExportService
+    ExportService --> ChromiumPDF
+    
+    BackupEngine -.->|"Safe Rotation (Excludes Auth)"| RotaDB
+    BackupEngine -.->|Credentialed Vault| AuthDB

@@ -1,0 +1,36 @@
+flowchart LR
+    classDef stock fill:#1e293b,stroke:#38bdf8,stroke-width:3px,color:#f8fafc;
+    classDef flow fill:#0f172a,stroke:#a855f7,stroke-width:2px,color:#f8fafc;
+    classDef loop fill:#312e81,stroke:#f59e0b,stroke-width:2px,stroke-dasharray: 5 5,color:#fbbf24;
+
+    SourceCloud((Public Cloud Git Repositories))
+    InflowExport[Inflow: Metadata Export Rate]
+    StockJSON[Stock: Serialized Repository Manifest]:::stock
+    OutflowImport[Outflow: Gitea Mirror Creation Velocity]
+
+    StockMirrors[Stock: Active Sovereign Continuous Pull-Mirrors]:::stock
+    OutflowSync[Outflow: Continuous Git Fetch Sync Rate]
+
+    SinkSovereign((Immutable Air-Gapped Code Vault))
+
+    SourceCloud --> InflowExport
+    InflowExport --> StockJSON
+    StockJSON --> OutflowImport
+    OutflowImport --> StockMirrors
+    StockMirrors --> OutflowSync
+    OutflowSync --> SinkSovereign
+
+    subgraph Loops["Systems Dynamics & Sovereign Mirroring Loops"]
+        LoopB1["Balancing Loop (B1): API Token Rate-Limit Throttling\n(GitHub Rate Limit Approaching -> Sleep Between Export Calls)"]:::loop
+        LoopB2["Balancing Loop (B2): Mirror Network Egress Pacing\n(Concurrent Gitea Clone Capacity -> Paces Initial Pull Queues)"]:::loop
+        LoopR1["Reinforcing Loop (R1): Data Sovereignty Compounding\n(Zero Egress IP Vault -> Shields Critical Code from Cloud Outages/Bans)"]:::loop
+    end
+
+    StockJSON -.->|API Rate Limit Margin| LoopB1
+    LoopB1 -.->|Pacing Signal| InflowExport
+
+    StockMirrors -.->|Clone Queue Concurrency| LoopB2
+    LoopB2 -.->|Pacing Vector| OutflowImport
+
+    StockMirrors -.->|Sovereignty Independence| LoopR1
+    LoopR1 -.->|Institutional Resilience| SourceCloud

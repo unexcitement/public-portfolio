@@ -1,0 +1,29 @@
+flowchart TB
+    subgraph HostWorkstation["Host Developer Machine (Zero NPM / CLI Installs)"]
+        Dev["Theme Engineer / Storefront Architect"]
+        SourceFiles["Theme Source Files (DawnSpaceTheme / Liquid / CSS / JSON)"]
+    end
+
+    subgraph ContainerRuntime["Hardened Ephemeral Container (shopify_dev)"]
+        ShopifyCLI["Shopify CLI Runtime Engine"]
+        DevServer["Local Development Preview Server (:9292)"]
+        ThemeSyncEngine["Theme Push / Pull Bidirectional Sync Engine"]
+    end
+
+    subgraph ShopifyCloud["Shopify Cloud Infrastructure"]
+        LiveStore["Live Storefront Instance (*.myshopify.com)"]
+        ThemeAPI["Shopify Theme REST/GraphQL API"]
+        AssetCDN["Shopify Fastly Asset CDN"]
+    end
+
+    Dev -->|Edits Templates & Assets| SourceFiles
+    SourceFiles <-->|Docker Volume Bind Mount| ContainerRuntime
+    Dev -->|docker exec -it shopify_dev sh| ShopifyCLI
+
+    ShopifyCLI --> DevServer
+    DevServer -->|Local Real-time Preview| Dev
+
+    ShopifyCLI --> ThemeSyncEngine
+    ThemeSyncEngine <-->|Authenticated TLS API Calls| ThemeAPI
+    ThemeAPI --> LiveStore
+    LiveStore --> AssetCDN

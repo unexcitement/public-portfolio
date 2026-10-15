@@ -1,0 +1,43 @@
+flowchart LR
+    classDef stock fill:#1e293b,stroke:#38bdf8,stroke-width:3px,color:#f8fafc;
+    classDef flow fill:#0f172a,stroke:#a855f7,stroke-width:2px,color:#f8fafc;
+    classDef loop fill:#312e81,stroke:#f59e0b,stroke-width:2px,stroke-dasharray: 5 5,color:#fbbf24;
+
+    SourceJobs((Extraction Task Ingestion))
+    InflowScrape[Inflow: Job Submission Rate]
+    StockJobs[Stock: In-Flight Scraping Job Queue]:::stock
+    OutflowExec[Outflow: Browser Launch Velocity]
+
+    StockBrowsers[Stock: Active Headless Chrome Contexts]:::stock
+    OutflowDOM[Outflow: HTML/JSON Extract Rate]
+
+    StockProxies[Stock: Healthy Rotating Proxy Pool]:::stock
+    OutflowBan[Outflow: Rate-Limit Ban Rate]
+
+    SinkExtracted((Parsed Structured Data Store))
+
+    SourceJobs --> InflowScrape
+    InflowScrape --> StockJobs
+    StockJobs --> OutflowExec
+    OutflowExec --> StockBrowsers
+    StockBrowsers --> OutflowDOM
+    OutflowDOM --> SinkExtracted
+
+    StockProxies --> OutflowExec
+    StockBrowsers --> OutflowBan
+    OutflowBan --> StockProxies
+
+    subgraph Loops["Systems Dynamics & Anti-Fragile Watchdog Loops"]
+        LoopB1["Balancing Loop (B1): Mutex Proxy Saturation Throttle\n(Depleted Healthy Proxies -> Delays Browser Execution)"]:::loop
+        LoopB2["Balancing Loop (B2): Watchdog Auto-Healing Trigger\n(Hanging Browser Contexts -> PM2 Force-Restarts Worker Daemon)"]:::loop
+        LoopR1["Reinforcing Loop (R1): Extraction Throughput Compounding\n(High Proxy Health & Zero Memory Leaks -> Maximizes Task Velocity)"]:::loop
+    end
+
+    StockProxies -.->|Proxy Pool Health| LoopB1
+    LoopB1 -.->|Pacing Signal| OutflowExec
+
+    StockBrowsers -.->|Timeout Liveness Probe| LoopB2
+    LoopB2 -.->|Restart Signal| OutflowExec
+
+    StockBrowsers -.->|Clean Execution Metric| LoopR1
+    LoopR1 -.->|Throughput Expansion| SourceJobs

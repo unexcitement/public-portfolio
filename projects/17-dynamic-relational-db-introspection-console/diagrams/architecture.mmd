@@ -1,0 +1,31 @@
+flowchart TB
+    subgraph BrowserSurface["Administrative Browser Surface"]
+        Admin["Database Administrator / Developer"]
+        WebUI["Dynamic Web Interface (EJS / Bootstrap)"]
+    end
+
+    subgraph ServerEngine["Node.js Introspection Core (:3000)"]
+        ExpressRouter["Express HTTP Controller"]
+        
+        subgraph IntrospectionEngine["Schema Discovery & Reflection Core"]
+            SchemaInspector["Dynamic Table & Column Reflection Engine\n(SHOW TABLES / DESCRIBE table)"]
+            CRUDGenerator["Automated SQL Query Builder\n(INSERT / UPDATE / SELECT Generator)"]
+            Sanitizer["SQL Parameter Sanitization & Safety Layer"]
+        end
+
+        ConnectionPool["MariaDB / MySQL Connection Pool Manager"]
+    end
+
+    subgraph RelationalDB["Target Database Perimeter"]
+        TargetDatabase[("Target Relational Database (MySQL / MariaDB)\n(Dynamic User Schemas & Tables)")]
+    end
+
+    Admin --> WebUI
+    WebUI -->|HTTP GET/POST /sql| ExpressRouter
+    ExpressRouter --> SchemaInspector
+    SchemaInspector <-->|Introspection Queries| ConnectionPool
+    ExpressRouter --> CRUDGenerator
+    CRUDGenerator --> Sanitizer
+    Sanitizer --> ConnectionPool
+    ConnectionPool <-->|Raw SQL Execution| TargetDatabase
+    ConnectionPool --> WebUI

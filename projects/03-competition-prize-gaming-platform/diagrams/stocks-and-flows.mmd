@@ -1,0 +1,41 @@
+flowchart LR
+    classDef stock fill:#1e293b,stroke:#38bdf8,stroke-width:3px,color:#f8fafc;
+    classDef flow fill:#0f172a,stroke:#a855f7,stroke-width:2px,color:#f8fafc;
+    classDef loop fill:#312e81,stroke:#f59e0b,stroke-width:2px,stroke-dasharray: 5 5,color:#fbbf24;
+
+    SourceContestants((Public Demand Surge))
+    InflowHold[Inflow: Reservation Hold Velocity]
+    StockAvailable[Stock: Available Ticket Inventory Pool]:::stock
+    StockHold["Stock: In-Checkout Held Tickets (TTL)"]:::stock
+    
+    OutflowAbandon[Outflow: TTL Expiration & Return Flow]
+    OutflowSettle[Outflow: Payment Settlement Flow]
+    
+    StockSettled[Stock: Confirmed Ticket Ledger]:::stock
+    OutflowDraw[Outflow: Draw Resolution Flow]
+    
+    SinkCompleted((Certified Winner Payout))
+
+    StockAvailable --> InflowHold
+    InflowHold --> StockHold
+    StockHold --> OutflowAbandon
+    OutflowAbandon --> StockAvailable
+    StockHold --> OutflowSettle
+    OutflowSettle --> StockSettled
+    StockSettled --> OutflowDraw
+    OutflowDraw --> SinkCompleted
+
+    subgraph Loops["Systems Dynamics & Regulatory Balancing Loops"]
+        LoopB1["Balancing Loop (B1): Absolute Inventory Ceiling\n(StockAvailable -> 0 terminates Hold Inflow)"]:::loop
+        LoopB2["Balancing Loop (B2): TTL Hold Expiry Eviction\n(Unpaid reservations auto-reclaim after 10 mins)"]:::loop
+        LoopR1["Reinforcing Loop (R1): Drop Scarcity Hype Dynamics\n(High Settled Rate -> Accelerates Perceived Urgency & Demand)"]:::loop
+    end
+
+    StockAvailable -.->|Depletion Sensing| LoopB1
+    LoopB1 -.->|Cutoff Signal| InflowHold
+
+    StockHold -.->|TTL Monitor| LoopB2
+    LoopB2 -.->|Reclaim Vector| OutflowAbandon
+
+    StockSettled -.->|Public Progress Bar Telemetry| LoopR1
+    LoopR1 -.->|Demand Stimulation| SourceContestants

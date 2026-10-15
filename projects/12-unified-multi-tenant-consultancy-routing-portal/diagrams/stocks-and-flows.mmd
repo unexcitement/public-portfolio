@@ -1,0 +1,41 @@
+flowchart LR
+    classDef stock fill:#1e293b,stroke:#38bdf8,stroke-width:3px,color:#f8fafc;
+    classDef flow fill:#0f172a,stroke:#a855f7,stroke-width:2px,color:#f8fafc;
+    classDef loop fill:#312e81,stroke:#f59e0b,stroke-width:2px,stroke-dasharray: 5 5,color:#fbbf24;
+
+    SourceTraffic((Multi-Domain Client Traffic))
+    InflowVisits[Inflow: Subdomain Routing Ingress Velocity]
+    StockViews[Stock: SSR Cached View Footprint]:::stock
+    OutflowBounce[Outflow: Passive Session Drop Flow]
+
+    StockLeads[Stock: Validated Inbound Enterprise Inquiries]:::stock
+    OutflowDispatch[Outflow: Encrypted SMTP Dispatch Flow]
+
+    StockPipeline[Stock: Active Engineering Consultancy Pipeline]:::stock
+    OutflowClosed[Outflow: Project Commissioning & Delivery]
+
+    SinkArchived((Executed Architectural Mandate))
+
+    SourceTraffic --> InflowVisits
+    InflowVisits --> StockViews
+    StockViews --> OutflowBounce
+    StockViews --> StockLeads
+    StockLeads --> OutflowDispatch
+    OutflowDispatch --> StockPipeline
+    StockPipeline --> OutflowClosed
+    OutflowClosed --> SinkArchived
+
+    subgraph Loops["Systems Dynamics & Business Leverage Loops"]
+        LoopB1["Balancing Loop (B1): Contact Anti-Spam Throttling\n(Inquiry Spike -> Rate-Limits Ingress SMTP Sockets)"]:::loop
+        LoopB2["Balancing Loop (B2): Principal Capacity Limit\n(High Active Pipeline -> Increases Engagement Threshold / Pricing)"]:::loop
+        LoopR1["Reinforcing Loop (R1): Multi-Domain Authority Compounding\n(High-Calibre Technical Delivery -> Elevates High-Value Enterprise Inquiries)"]:::loop
+    end
+
+    StockLeads -.->|Lead Velocity Telemetry| LoopB1
+    LoopB1 -.->|Pacing Signal| InflowVisits
+
+    StockPipeline -.->|Consulting Saturation Sensing| LoopB2
+    LoopB2 -.->|Qualification Filter| OutflowDispatch
+
+    OutflowClosed -.->|Case Study Authority| LoopR1
+    LoopR1 -.->|Enterprise Lead Growth| SourceTraffic

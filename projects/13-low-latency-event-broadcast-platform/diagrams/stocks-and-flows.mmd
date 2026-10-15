@@ -1,0 +1,44 @@
+flowchart LR
+    classDef stock fill:#1e293b,stroke:#38bdf8,stroke-width:3px,color:#f8fafc;
+    classDef flow fill:#0f172a,stroke:#a855f7,stroke-width:2px,color:#f8fafc;
+    classDef loop fill:#312e81,stroke:#f59e0b,stroke-width:2px,stroke-dasharray: 5 5,color:#fbbf24;
+
+    SourceStreamers((Live Field Event Generation))
+    InflowIngest[Inflow: RTMP/SRT Media Ingestion Rate]
+    StockSegments[Stock: Cached Ephemeral HLS Segments]:::stock
+    OutflowPurge[Outflow: Rolling Window Segment Purge Rate]
+
+    StockViewers[Stock: Active Concurrent Stream Viewers]:::stock
+    OutflowDisconnect[Outflow: Viewer Session Disconnect Velocity]
+
+    StockBandwidth[Stock: Available Outbound Egress Pipe]:::stock
+    OutflowEgress[Outflow: Video Packet Delivery Velocity]
+
+    SinkTerminated((Concluded Broadcast Session))
+
+    SourceStreamers --> InflowIngest
+    InflowIngest --> StockSegments
+    StockSegments --> OutflowPurge
+    OutflowPurge --> SinkTerminated
+
+    StockSegments --> StockViewers
+    StockViewers --> OutflowDisconnect
+    OutflowDisconnect --> SinkTerminated
+
+    StockBandwidth --> OutflowEgress
+    StockViewers --> OutflowEgress
+
+    subgraph Loops["Systems Dynamics & Streaming Equilibrium Loops"]
+        LoopB1["Balancing Loop (B1): Transcoder Buffer Backpressure\n(Ingest Lag Detected -> Drops Non-Keyframe Video Chunks)"]:::loop
+        LoopB2["Balancing Loop (B2): Adaptive Bitrate Congestion Guard\n(Saturated Egress -> Downshifts Viewer HLS Quality Profile)"]:::loop
+        LoopR1["Reinforcing Loop (R1): Live Event Virality\n(Low Latency & High Stability -> Amplifies Social Viewer Influx)"]:::loop
+    end
+
+    StockSegments -.->|Buffer Depth Sensing| LoopB1
+    LoopB1 -.->|Pacing Signal| InflowIngest
+
+    StockBandwidth -.->|Congestion Monitor| LoopB2
+    LoopB2 -.->|Quality Stepdown| OutflowEgress
+
+    StockViewers -.->|Audience Virality| LoopR1
+    LoopR1 -.->|Audience Acceleration| StockViewers

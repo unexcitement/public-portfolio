@@ -1,0 +1,45 @@
+flowchart TB
+    subgraph ClientLayer["Edge & Client Perimeter"]
+        PublicUser["Public Contestants (High-Concurrency Spike Ingress)"]
+        AdminUser["Auditors & Platform Operators"]
+        EdgeCDN["Cloudflare / Caddy Edge (DDoS Mitigation & Caching)"]
+    end
+
+    subgraph StorefrontLayer["Front-End Presentation Tiers (Nuxt 3 SSR)"]
+        PublicStore["Contestant Storefront (Nuxt 3 / Pinia / Tailwind)"]
+        AdminPortal["Compliance & Draw Control Admin (Nuxt 3 / RBAC)"]
+    end
+
+    subgraph APIServices["Application API Cluster (TypeScript / Node.js)"]
+        APIGateway["Express REST & Event Controller (:4000)"]
+        subgraph ConcurrencyEngine["Transactional Ticket Allocation Engine"]
+            LockManager["Pessimistic Row Lock & Reservation Coordinator"]
+            RNGService["Cryptographically Verifiable PRNG Draw Auditor"]
+        end
+        JobQueue["BullMQ Asynchronous Queue Workers"]
+    end
+
+    subgraph StateStorage["State & Ledger Cluster"]
+        RedisStore[("Redis Cluster (Ticket Reservation TTL & BullMQ)")]
+        MySQLDB[("MySQL Database (ACID Ledger & Transaction Isolation)")]
+        S3Storage[("Encrypted S3 Object Store (Audit & Winner Certificates)")]
+    end
+
+    PublicUser --> EdgeCDN
+    AdminUser --> EdgeCDN
+    EdgeCDN --> PublicStore
+    EdgeCDN --> AdminPortal
+
+    PublicStore -->|HTTP/REST Checkout| APIGateway
+    AdminPortal -->|JWT Authenticated Ops| APIGateway
+
+    APIGateway --> ConcurrencyEngine
+    LockManager -->|Atomic Reserve / TTL Release| RedisStore
+    LockManager -->|SELECT FOR UPDATE / ACID Commit| MySQLDB
+    APIGateway -->|Enqueue Settlement Job| JobQueue
+    JobQueue --> RedisStore
+    JobQueue --> MySQLDB
+
+    ConcurrencyEngine -->|Trigger Draw Execution| RNGService
+    RNGService -->|Write Immutable Draw Certificate| S3Storage
+    RNGService -->|Commit Certified Winner| MySQLDB

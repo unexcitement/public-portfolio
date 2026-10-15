@@ -1,0 +1,43 @@
+flowchart TB
+    subgraph WANPerimeter["External Web & Egress Perimeter"]
+        TargetWeb["Target Websites & Web Applications"]
+        ProxyPool["Rotating Residential / Datacenter Proxy Network"]
+    end
+
+    subgraph ClusterPerimeter["Containerized Scraping Appliance (Docker Compose)"]
+        NginxGateway["Nginx Reverse Proxy & SSL Gateway"]
+        
+        subgraph ScrapingCore["Headless Browser Service (Go chromedp :9001)"]
+            TokenAuth["Auth Token Gatekeeper (AUTH_TOKEN)"]
+            ProxyRotator["Mutex-Protected Proxy Rotator (PROXIES Pool)"]
+            BrowserContext["Ephemeral Headless Shell Engine\n(chromedp/headless-shell:latest)"]
+            ResponseParser["DOM Selector & JSON/HTML Extractor"]
+        end
+
+        subgraph SupervisorLayer["Self-Healing Watchdog Tier (scrape-broker)"]
+            HealthProber["Active Scrape Checker Daemon\n(Heartbeat Probe /api/v1/raw)"]
+            PM2Supervisor["PM2 Process Supervisor & Crash Recovery"]
+        end
+
+        subgraph LegacyApp["Core Business Application (PHP 8 / MySQL)"]
+            PHPApp["Legacy Orchestration Engine"]
+            MySQLDB[("MySQL 8.0 Job & Result Store")]
+        end
+    end
+
+    PHPApp -->|Internal HTTP GET :9001/scrape| NginxGateway
+    NginxGateway --> TokenAuth
+    TokenAuth --> ProxyRotator
+    ProxyRotator --> BrowserContext
+    
+    BrowserContext -->|Route Through Proxies| ProxyPool
+    ProxyPool -->|Automated Navigation| TargetWeb
+    TargetWeb --> BrowserContext
+    
+    BrowserContext --> ResponseParser
+    ResponseParser --> PHPApp
+    PHPApp --> MySQLDB
+
+    HealthProber -.->|Periodic Liveness Query| TokenAuth
+    HealthProber -.->|On Failure / Hang| PM2Supervisor
+    PM2Supervisor -.->|Auto-Restart Signal| ScrapingCore

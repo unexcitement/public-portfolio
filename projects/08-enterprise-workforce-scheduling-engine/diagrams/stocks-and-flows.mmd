@@ -1,0 +1,46 @@
+flowchart LR
+    classDef stock fill:#1e293b,stroke:#38bdf8,stroke-width:3px,color:#f8fafc;
+    classDef flow fill:#0f172a,stroke:#a855f7,stroke-width:2px,color:#f8fafc;
+    classDef loop fill:#312e81,stroke:#f59e0b,stroke-width:2px,stroke-dasharray: 5 5,color:#fbbf24;
+
+    SourceDemands((Weekly Operational Staffing Need))
+    InflowDraft[Inflow: Shift Scheduling Rate]
+    StockDraft[Stock: In-Flight Schedule Revisions]:::stock
+    OutflowClash[Outflow: 409 Collision Rejection Rate]
+    OutflowCommit[Outflow: Validated Revision Commit Velocity]
+
+    StockPublished[Stock: Confirmed Weekly Work Schedule]:::stock
+    OutflowWorked[Outflow: Shift Fulfillment & Labor Burn Rate]
+
+    StockCapacity[Stock: Available Staff Weekly Hour Pool]:::stock
+    OutflowPayroll[Outflow: Payroll & Wage Export Rate]
+
+    SinkExecuted((Operational Weekly Closeout))
+
+    SourceDemands --> InflowDraft
+    InflowDraft --> StockDraft
+    StockDraft --> OutflowClash
+    OutflowClash --> StockDraft
+    StockDraft --> OutflowCommit
+    OutflowCommit --> StockPublished
+    StockPublished --> OutflowWorked
+    OutflowWorked --> SinkExecuted
+
+    StockCapacity --> OutflowWorked
+    OutflowWorked --> OutflowPayroll
+    OutflowPayroll --> SinkExecuted
+
+    subgraph Loops["Systems Dynamics & Operational Feedback Loops"]
+        LoopB1["Balancing Loop (B1): Optimistic Concurrency Collision Guard\n(Stale Revision Detected -> Triggers 409 Rejection & Client Resync)"]:::loop
+        LoopB2["Balancing Loop (B2): Working Time Directive Ceiling\n(Depleted Staff Hours -> Flags Overtime & Blocks Further Shifts)"]:::loop
+        LoopR1["Reinforcing Loop (R1): Labor Efficiency Compounding\n(Accurate Rota Forecasting -> Lowers Churn & Stabilizes Availability)"]:::loop
+    end
+
+    StockDraft -.->|Revision Vector Clashing| LoopB1
+    LoopB1 -.->|409 Abort Signal| OutflowClash
+
+    StockCapacity -.->|Threshold Monitoring| LoopB2
+    LoopB2 -.->|Allocation Cap| InflowDraft
+
+    StockPublished -.->|Predictable Scheduling Telemetry| LoopR1
+    LoopR1 -.->|Staff Retention Reinvestment| StockCapacity

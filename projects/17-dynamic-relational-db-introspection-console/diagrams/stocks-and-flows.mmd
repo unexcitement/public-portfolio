@@ -1,0 +1,32 @@
+flowchart LR
+    classDef stock fill:#1e293b,stroke:#38bdf8,stroke-width:3px,color:#f8fafc;
+    classDef flow fill:#0f172a,stroke:#a855f7,stroke-width:2px,color:#f8fafc;
+    classDef loop fill:#312e81,stroke:#f59e0b,stroke-width:2px,stroke-dasharray: 5 5,color:#fbbf24;
+
+    SourceDDL((Database Schema Mutations))
+    InflowDetect[Inflow: Dynamic Schema Reflection Rate]
+    StockTables[Stock: Discovered Table & Field Entities]:::stock
+    OutflowRender[Outflow: CRUD View Generation Velocity]
+
+    StockQueries[Stock: In-Flight SQL Transactions]:::stock
+    OutflowExecute[Outflow: Row Mutation Execution Rate]
+
+    SinkCommitted((Persisted Database State))
+
+    SourceDDL --> InflowDetect
+    InflowDetect --> StockTables
+    StockTables --> OutflowRender
+    OutflowRender --> StockQueries
+    StockQueries --> OutflowExecute
+    OutflowExecute --> SinkCommitted
+
+    subgraph Loops["Systems Dynamics & Database Connection Loops"]
+        LoopB1["Balancing Loop (B1): Pool Connection Saturation Throttle\n(High Query Concurrency -> Queues Ingress Database Transactions)"]:::loop
+        LoopR1["Reinforcing Loop (R1): Schema Discovery Agility\n(Instant Introspection -> Eliminates Migration Code Generation Delay)"]:::loop
+    end
+
+    StockQueries -.->|Pool Headroom Sensing| LoopB1
+    LoopB1 -.->|Pacing Signal| OutflowRender
+
+    StockTables -.->|Zero-Config Advantage| LoopR1
+    LoopR1 -.->|Developer Velocity| SourceDDL

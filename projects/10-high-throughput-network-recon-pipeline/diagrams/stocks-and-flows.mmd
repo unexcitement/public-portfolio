@@ -1,0 +1,46 @@
+flowchart LR
+    classDef stock fill:#1e293b,stroke:#38bdf8,stroke-width:3px,color:#f8fafc;
+    classDef flow fill:#0f172a,stroke:#a855f7,stroke-width:2px,color:#f8fafc;
+    classDef loop fill:#312e81,stroke:#f59e0b,stroke-width:2px,stroke-dasharray: 5 5,color:#fbbf24;
+
+    SourceCIDR((Target Network Scope))
+    InflowExpand[Inflow: Subnet Expansion Rate]
+    StockTargetIPs[Stock: Unprobed Raw IP Target Pool]:::stock
+    OutflowPing[Outflow: ICMP Ping Sweep Velocity]
+
+    StockAlive[Stock: Alive Host Verification Pool]:::stock
+    OutflowPort[Outflow: TCP Handshake Probing Rate]
+
+    StockOpenPorts[Stock: Open Media Port Endpoints]:::stock
+    OutflowRTSP[Outflow: Protocol Fingerprint Verification Flow]
+
+    StockVerified[Stock: Verified Video Stream Intelligence]:::stock
+    OutflowDedup[Outflow: Deduplication & Clean Ingestion Flow]
+
+    SinkOutput((Aggregated Threat/Intelligence DB))
+
+    SourceCIDR --> InflowExpand
+    InflowExpand --> StockTargetIPs
+    StockTargetIPs --> OutflowPing
+    OutflowPing --> StockAlive
+    StockAlive --> OutflowPort
+    OutflowPort --> StockOpenPorts
+    StockOpenPorts --> OutflowRTSP
+    OutflowRTSP --> StockVerified
+    StockVerified --> OutflowDedup
+    OutflowDedup --> SinkOutput
+
+    subgraph Loops["Systems Dynamics & Network Throttle Loops"]
+        LoopB1["Balancing Loop (B1): Kernel File Descriptor Limit\n(High Active Sockets -> Backs off Ingress Goroutine Spawns)"]:::loop
+        LoopB2["Balancing Loop (B2): Network Egress Drop Prevention\n(Packet Loss Spike -> Slows Ping Dispatch Inter-Packet Delay)"]:::loop
+        LoopR1["Reinforcing Loop (R1): Autonomous Discovery Compounding\n(Responsive Subnets -> Triggers Adjacent CIDR Heuristic Probes)"]:::loop
+    end
+
+    StockAlive -.->|Socket Saturation| LoopB1
+    LoopB1 -.->|Pacing Signal| OutflowPing
+
+    StockOpenPorts -.->|Drop Rate Sensing| LoopB2
+    LoopB2 -.->|Delay Signal| OutflowPort
+
+    StockVerified -.->|Subnet Density Analytics| LoopR1
+    LoopR1 -.->|New Scope Influx| SourceCIDR

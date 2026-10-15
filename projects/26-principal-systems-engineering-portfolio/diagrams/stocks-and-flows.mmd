@@ -1,0 +1,32 @@
+flowchart LR
+    classDef stock fill:#1e293b,stroke:#38bdf8,stroke-width:3px,color:#f8fafc;
+    classDef flow fill:#0f172a,stroke:#a855f7,stroke-width:2px,color:#f8fafc;
+    classDef loop fill:#312e81,stroke:#f59e0b,stroke-width:2px,stroke-dasharray: 5 5,color:#fbbf24;
+
+    SourcePrivate((Private Enterprise Repositories))
+    InflowFilter[Inflow: Hazard Filtering & Sanitization Rate]
+    StockSanitized[Stock: Declassified System Profiles]:::stock
+    OutflowCompile[Outflow: Ephemeral Docker Vector Rendering Flow]
+
+    StockDiagrams[Stock: Compiled High-Fidelity SVG Vectors]:::stock
+    OutflowPublish[Outflow: Public Portfolio Publishing Velocity]
+
+    SinkAudited((Public Strategic Architecture Showcase))
+
+    SourcePrivate --> InflowFilter
+    InflowFilter --> StockSanitized
+    StockSanitized --> OutflowCompile
+    OutflowCompile --> StockDiagrams
+    StockDiagrams --> OutflowPublish
+    OutflowPublish --> SinkAudited
+
+    subgraph Loops["Systems Dynamics & Declassification Loops"]
+        LoopB1["Balancing Loop (B1): Hazard Redaction Filter\n(Proprietary Identifier Detected -> Blocks Declassification Flow)"]:::loop
+        LoopR1["Reinforcing Loop (R1): Architectural Authority Compounding\n(Transparent Structural Depth -> Elevates High-Leverage Strategic Mandates)"]:::loop
+    end
+
+    StockSanitized -.->|Sanitization Assertion| LoopB1
+    LoopB1 -.->|Redaction Vector| InflowFilter
+
+    SinkAudited -.->|Market Signal Recognition| LoopR1
+    LoopR1 -.->|Executive Consulting Advisory| SourcePrivate

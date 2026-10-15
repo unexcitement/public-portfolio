@@ -1,0 +1,31 @@
+flowchart TB
+    subgraph BrowserDevTools["Client Browser DevTools Runtime (Zero-Host Install)"]
+        Operator["Systems Architect / Operator"]
+        
+        subgraph Scripts["Client-Side Migration Scripts"]
+            ExportScript["exportToJSON.js\n(Executes in github.com DevTools Console)"]
+            JSONState["Structured Metadata JSON Artifact\n(Repo Names, Visibility, Clone URLs)"]
+            ImportScript["importFromJSON.js\n(Executes in Gitea DevTools Console)"]
+        end
+    end
+
+    subgraph CloudVCS["Public Cloud Git Provider (GitHub)"]
+        GitHubAPI["GitHub REST API (v3 / GraphQL)"]
+        PublicRepos["Public & Private Enterprise Repositories"]
+    end
+
+    subgraph SovereignVCS["Self-Hosted Sovereign VCS (Private Gitea Instance)"]
+        GiteaAPI["Gitea REST API (/api/v1/repos/migrate)"]
+        ContinuousMirrors["Continuous Pull-Mirror Repositories\n(Scheduled Background Git Fetch / Sync)"]
+    end
+
+    Operator --> ExportScript
+    ExportScript <-->|Authenticated Read via PAT| GitHubAPI
+    GitHubAPI --> PublicRepos
+    ExportScript -->|Downloads File| JSONState
+
+    Operator --> ImportScript
+    JSONState --> ImportScript
+    ImportScript -->|Continuous Pull-Mirror Payload| GiteaAPI
+    GiteaAPI --> ContinuousMirrors
+    ContinuousMirrors <-->|"Continuous Automated Sync (SSH/HTTPS)"| PublicRepos

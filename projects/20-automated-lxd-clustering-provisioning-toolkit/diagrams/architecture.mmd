@@ -1,0 +1,46 @@
+flowchart TB
+    subgraph OrchestrationHost["Operator Workstation / Control Station"]
+        Operator["Systems Architect"]
+        KitGenerator["generate-lxd-kit.sh\n(Dynamic Script & Secret Synthesizer)"]
+        PortChecker["port-check.sh\n(Pre-Flight TCP :8443 / :53 Diagnostic)"]
+    end
+
+    subgraph NodeCluster["Heterogeneous Multi-Node LXD Cluster"]
+        subgraph LeaderNode["Primary Node (Primary bare-metal host)"]
+            InitScript["provision-primary.sh / 3-join-primary.sh"]
+            LXDLeader["LXD Primary Daemon & Trust Authority"]
+            StoragePool["ZFS / Btrfs Storage Pool"]
+        end
+
+        subgraph EdgeNode1["Edge Node 1 (Edge workstation)"]
+            JoinWS["1-init-workstation.sh"]
+            LXDNode1["LXD Cluster Member"]
+        end
+
+        subgraph EdgeNode2["Edge Node 2 (Edge mini-PC)"]
+            JoinNUC["2-join-edge-mini.sh"]
+            LXDNode2["LXD Cluster Member"]
+        end
+    end
+
+    subgraph ClusterFabric["Unified Virtual Network Fabric"]
+        LXDNetBridge["lxdbr0 distributed bridge (private /24)"]
+        MeshRouting["Direct Wire / Tailscale Inter-Node Mesh"]
+    end
+
+    Operator --> KitGenerator
+    KitGenerator --> PortChecker
+    PortChecker -->|Pre-Flight Verification| NodeCluster
+
+    KitGenerator --> InitScript
+    KitGenerator --> JoinWS
+    KitGenerator --> JoinNUC
+
+    InitScript --> LXDLeader
+    JoinWS -->|"Trust Handshake (Token / TLS)"| LXDLeader
+    JoinNUC -->|"Trust Handshake (Token / TLS)"| LXDLeader
+
+    LXDLeader --> LXDNetBridge
+    LXDNode1 --> LXDNetBridge
+    LXDNode2 --> LXDNetBridge
+    LXDNetBridge <--> MeshRouting

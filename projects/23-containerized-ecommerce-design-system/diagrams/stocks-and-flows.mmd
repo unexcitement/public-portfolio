@@ -1,0 +1,32 @@
+flowchart LR
+    classDef stock fill:#1e293b,stroke:#38bdf8,stroke-width:3px,color:#f8fafc;
+    classDef flow fill:#0f172a,stroke:#a855f7,stroke-width:2px,color:#f8fafc;
+    classDef loop fill:#312e81,stroke:#f59e0b,stroke-width:2px,stroke-dasharray: 5 5,color:#fbbf24;
+
+    SourceEdits((Theme Asset Mutation Event))
+    InflowWatch[Inflow: File Watcher Sync Rate]
+    StockLocal[Stock: Staged Local Liquid & Asset Modifications]:::stock
+    OutflowPush[Outflow: API Theme Upload Velocity]
+
+    StockCloudTheme[Stock: Deployed Remote Theme Asset Tree]:::stock
+    OutflowRender[Outflow: Customer Page Render Rate]
+
+    SinkCustomer((Delivered Storefront Experience))
+
+    SourceEdits --> InflowWatch
+    InflowWatch --> StockLocal
+    StockLocal --> OutflowPush
+    OutflowPush --> StockCloudTheme
+    StockCloudTheme --> OutflowRender
+    OutflowRender --> SinkCustomer
+
+    subgraph Loops["Systems Dynamics & Dev Velocity Loops"]
+        LoopB1["Balancing Loop (B1): API Rate-Limit Throttling\n(Frequent Asset Saves -> Batches Asset Uploads)"]:::loop
+        LoopR1["Reinforcing Loop (R1): Hot-Reload Feedback Velocity\n(Sub-Second Local Previews -> Accelerates Design Iteration)"]:::loop
+    end
+
+    StockLocal -.->|Upload Frequency| LoopB1
+    LoopB1 -.->|Batching Factor| OutflowPush
+
+    StockLocal -.->|Instant Visual Feedback| LoopR1
+    LoopR1 -.->|Iteration Speed| SourceEdits

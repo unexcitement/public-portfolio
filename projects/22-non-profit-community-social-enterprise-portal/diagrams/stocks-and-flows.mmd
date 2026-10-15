@@ -1,0 +1,39 @@
+flowchart LR
+    classDef stock fill:#1e293b,stroke:#38bdf8,stroke-width:3px,color:#f8fafc;
+    classDef flow fill:#0f172a,stroke:#a855f7,stroke-width:2px,color:#f8fafc;
+    classDef loop fill:#312e81,stroke:#f59e0b,stroke-width:2px,stroke-dasharray: 5 5,color:#fbbf24;
+
+    SourceFunding((Grant & Municipal Funding Influx))
+    InflowGrants[Inflow: Grant Allocation Flow]
+    StockCapital[Stock: Operational Social Enterprise Capital]:::stock
+    OutflowOperations[Outflow: Community Service Expenditure Rate]
+
+    StockInterns[Stock: Enrolled Supported Interns]:::stock
+    OutflowPlacement[Outflow: Work Placement Graduation Velocity]
+
+    StockMeals[Stock: Subsidized Food Distribution Capacity]:::stock
+    OutflowDistribution[Outflow: Family Meal Provisioning Rate]
+
+    SinkImpact((Empowered Community Well-Being))
+
+    SourceFunding --> InflowGrants
+    InflowGrants --> StockCapital
+    StockCapital --> OutflowOperations
+    OutflowOperations --> StockMeals
+    OutflowOperations --> StockInterns
+
+    StockMeals --> OutflowDistribution
+    StockInterns --> OutflowPlacement
+    OutflowDistribution --> SinkImpact
+    OutflowPlacement --> SinkImpact
+
+    subgraph Loops["Systems Dynamics & Social Enterprise Feedback Loops"]
+        LoopB1["Balancing Loop (B1): Grant Depletion Throttle\n(Capital Reserves Dip -> Paces New Placement Commitments)"]:::loop
+        LoopR1["Reinforcing Loop (R1): Social Impact Multiplier\n(High Graduation & Meal Delivery -> Secures Follow-on Municipal Grants)"]:::loop
+    end
+
+    StockCapital -.->|Reserves Margin| LoopB1
+    LoopB1 -.->|Pacing Signal| OutflowOperations
+
+    SinkImpact -.->|Verified Social ROI| LoopR1
+    LoopR1 -.->|Grant Renewal Acceleration| InflowGrants
