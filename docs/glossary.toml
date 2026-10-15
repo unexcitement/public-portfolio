@@ -1,0 +1,480 @@
+# Single source of truth for GLOSSARY.md and docs/roles/*.md.
+# Edit this file, then run: python3 scripts/build_glossary.py
+
+[projects]
+"01" = { name = "Event-Sourcing Operations Hub", dir = "01-event-sourcing-operations-hub" }
+"02" = { name = "EPOS TCP Proxy Middleware", dir = "02-epos-tcp-proxy-middleware" }
+"03" = { name = "Competition & Prize Platform", dir = "03-competition-prize-gaming-platform" }
+"04" = { name = "Capacity Modeling Engine", dir = "04-cognitive-capacity-modeling-engine" }
+"05" = { name = "OASIS Multi-Tenant SaaS", dir = "05-schema-isolated-multi-tenant-saas" }
+"06" = { name = "AI Sandbox Control Plane", dir = "06-autonomous-ai-sandbox-control-plane" }
+"07" = { name = "Sovereign LXD Cluster", dir = "07-sovereign-hybrid-cloud-lxd-cluster" }
+"08" = { name = "Workforce Scheduling Engine", dir = "08-enterprise-workforce-scheduling-engine" }
+"09" = { name = "Geospatial Stream Dashboard", dir = "09-geospatial-live-stream-intelligence-dashboard" }
+"10" = { name = "Network Recon Pipeline", dir = "10-high-throughput-network-recon-pipeline" }
+"11" = { name = "Headless Scraping Cluster", dir = "11-distributed-headless-scraping-cluster" }
+"12" = { name = "Consultancy Routing Portal", dir = "12-unified-multi-tenant-consultancy-routing-portal" }
+"13" = { name = "Livestreaming Platform", dir = "13-low-latency-event-broadcast-platform" }
+"14" = { name = "Web3 Notary Gateway", dir = "14-decentralized-notary-web3-auth-gateway" }
+"15" = { name = "Web Audio Synthesizer", dir = "15-web-audio-dsp-modular-synthesizer" }
+"16" = { name = "Expression Complexity Engine", dir = "16-algorithmic-expression-complexity-engine" }
+"17" = { name = "DB Introspection Console", dir = "17-dynamic-relational-db-introspection-console" }
+"18" = { name = "Game Server RCON Orchestrator", dir = "18-dedicated-game-server-rcon-orchestrator" }
+"19" = { name = "Git Mirror Automation", dir = "19-sovereign-git-continuous-mirror-automation" }
+"20" = { name = "LXD Clustering Toolkit", dir = "20-automated-lxd-clustering-provisioning-toolkit" }
+"21" = { name = "Assisted Meal Delivery Platform", dir = "21-nutritional-logistics-assisted-delivery-platform" }
+"22" = { name = "Social Enterprise Portal", dir = "22-non-profit-community-social-enterprise-portal" }
+"23" = { name = "Shopify Storefront Engine", dir = "23-containerized-ecommerce-design-system" }
+"24" = { name = "ChatOps Telemetry Microservice", dir = "24-automated-chatops-telemetry-microservice" }
+"25" = { name = "MEEN Full-Stack Scaffold", dir = "25-monolithic-relational-fullstack-scaffold" }
+"26" = { name = "Portfolio Engine", dir = "26-principal-systems-engineering-portfolio" }
+
+# ---------------------------------------------------------------------------
+# Roles. `flagship` is an ordered list of [project, why-it-matters] pairs.
+# ---------------------------------------------------------------------------
+
+[[roles]]
+slug = "platform-operations"
+title = "Platform Operations & SRE"
+audience = "Hiring managers and engineers looking for infrastructure, platform, DevOps or site reliability experience."
+summary = "Self-hosted clusters, isolation boundaries, provisioning automation and the operational tooling that keeps them observable and recoverable."
+flagship = [
+  ["07", "A multi-node LXD cluster with Raft quorum, OIDC, secret management, isolated egress and full observability."],
+  ["06", "Kernel-level sandboxing for untrusted workloads: zero-egress firewalling, ZFS copy-on-write and GPU fencing."],
+  ["20", "Idempotent bootstrapping that federates mixed hardware into one cluster without hand-copied certificates."],
+  ["19", "Continuous pull-mirroring of source code onto self-hosted Gitea for supply-chain independence."],
+  ["24", "A small, stateless container that turns telemetry into ChatOps alerts with rate-limit backoff."],
+  ["01", "Infrastructure as code provisioning of the sandboxes behind an event-driven control surface."],
+]
+
+[[roles]]
+slug = "software-engineering"
+title = "Software Engineering (Backend & Distributed Systems)"
+audience = "Engineering leads assessing backend, concurrency, data modelling and distributed systems depth."
+summary = "Concurrency control, event-driven pipelines, protocol work and data models that stay correct under load."
+flagship = [
+  ["01", "Go ingress proxy, append-only SQLite WAL ledger and SSE fan-out with human approval gates."],
+  ["02", "Binary protocol reverse-engineering: concurrent TCP proxying, in-memory raster decoding and OCR, failing open."],
+  ["03", "Pessimistic locking, Redis reservations and BullMQ settlement to survive flash-sale spikes without double allocation."],
+  ["05", "Schema-per-tenant PostgreSQL with transaction-scoped search_path and distributed RBAC."],
+  ["08", "Optimistic concurrency with HTTP 409/428, dual-database isolation and an integer time grid."],
+  ["10", "Goroutine worker pools and staged pruning across very large address spaces."],
+]
+
+[[roles]]
+slug = "security-engineering"
+title = "Security Engineering"
+audience = "Security teams and CISOs looking for isolation, identity, secrets and audit design."
+summary = "Defence in depth by architecture: isolation, least privilege, secret brokerage, cryptographic proofs and audit trails."
+flagship = [
+  ["06", "Zero-egress containment, CoW sandboxes and short-lived secrets for untrusted AI agents."],
+  ["05", "Tenant isolation enforced at the database layer rather than in application WHERE clauses."],
+  ["07", "Zero-trust identity with Authentik OIDC and OpenBao, plus namespace-isolated egress."],
+  ["14", "Non-custodial key management and Merkle-batched on-chain notarisation."],
+  ["18", "Keeping game-server admin ports off the internet behind an authenticated, audited bridge."],
+  ["26", "Hazard Filtering: the redaction process used to publish this portfolio."],
+]
+
+[[roles]]
+slug = "frontend-product"
+title = "Frontend & Product Engineering"
+audience = "Product teams looking for user-facing, real-time and interactive application work."
+summary = "Interactive, real-time and server-rendered interfaces, from browser DSP to GIS dashboards to multi-brand SSR."
+flagship = [
+  ["15", "A modular synthesizer on the Web Audio API with voice stealing and sample-accurate automation."],
+  ["09", "Leaflet GIS with live HLS thumbnails and alert states, packaged as a self-contained appliance."],
+  ["12", "One Nuxt 3 SSR codebase serving several brands by inspecting the Host header."],
+  ["16", "AST-driven expression transforms with invariant checks and a branching history timeline."],
+  ["08", "A React 19 scheduling UI backed by conflict-safe edits and headless PDF export."],
+  ["23", "A containerised Shopify theme toolchain with modular Liquid components."],
+]
+
+[[roles]]
+slug = "solutions-architecture"
+title = "Solutions Architecture & Technical Consulting"
+audience = "Clients, founders and leadership looking for someone to translate business and social outcomes into systems."
+summary = "Turning multi-stakeholder problems into delivered systems: commercial models, public-sector and non-profit outcomes, and systems thinking."
+flagship = [
+  ["05", "OASIS: a reusable SaaS foundation, the 'engine' in the Engine + Paint delivery model."],
+  ["12", "A consultancy front door serving several brands and offerings from one footprint."],
+  ["22", "Outcome ledgers that let a Community Interest Company report against grant funding."],
+  ["21", "Dietary, routing and safeguarding requirements for vulnerable residents turned into an auditable workflow."],
+  ["04", "Modelling cognitive load and capacity across organisations for clinical and leadership use."],
+  ["26", "Dual-paradigm documentation: every system explained as topology and as Stocks & Flows."],
+]
+
+# ---------------------------------------------------------------------------
+# Terms. roles must match a role slug above; projects are catalog numbers.
+# ---------------------------------------------------------------------------
+
+[[terms]]
+term = "Abstract Syntax Tree (AST)"
+definition = "A tree representation of an expression or program. Transforming the tree rather than the text keeps every change structurally valid."
+projects = ["16"]
+roles = ["software-engineering", "frontend-product"]
+
+[[terms]]
+term = "Adaptive Bitrate Streaming (HLS)"
+definition = "Video split into short segments at several quality levels so each viewer's player can switch quality to match their connection."
+projects = ["13", "09"]
+roles = ["software-engineering", "frontend-product"]
+
+[[terms]]
+term = "Append-Only Ledger"
+definition = "A store where records are only ever added, never edited or deleted, so history can be replayed and audited."
+projects = ["01", "03", "16", "18", "21", "22"]
+roles = ["software-engineering", "security-engineering"]
+
+[[terms]]
+term = "Applied Systems Theory (Stocks & Flows)"
+definition = "Donella Meadows' method of modelling a system as stocks (things that accumulate), flows (rates that change them) and feedback loops. Every project profile includes one of these diagrams."
+projects = ["26", "01", "04"]
+roles = ["solutions-architecture"]
+
+[[terms]]
+term = "Audit Trail"
+definition = "A tamper-evident record of who did what and when, kept so decisions can be reviewed by regulators, funders or operators."
+projects = ["03", "08", "18", "21", "22"]
+roles = ["security-engineering", "solutions-architecture"]
+
+[[terms]]
+term = "Backpressure"
+definition = "Slowing or shedding incoming work when a downstream stage is full, instead of letting queues grow until something breaks."
+projects = ["01", "02", "24"]
+roles = ["software-engineering", "platform-operations"]
+
+[[terms]]
+term = "ChatOps"
+definition = "Running operational alerts and actions through team chat so the whole team sees system state where they already work."
+projects = ["24"]
+roles = ["platform-operations"]
+
+[[terms]]
+term = "Community Interest Company (CIC)"
+definition = "A UK social-enterprise company type that must show its activity benefits the community, which drives statutory outcome reporting."
+projects = ["22"]
+roles = ["solutions-architecture"]
+
+[[terms]]
+term = "Connection Pooling"
+definition = "Reusing a fixed set of open database connections instead of opening one per request, which caps load and cuts latency."
+projects = ["25", "17"]
+roles = ["software-engineering"]
+
+[[terms]]
+term = "Copy-on-Write (CoW) Snapshots"
+definition = "Filesystem snapshots (here ZFS) that share unchanged blocks, so a fresh sandbox can be cloned in seconds and thrown away cleanly."
+projects = ["06"]
+roles = ["platform-operations", "security-engineering"]
+
+[[terms]]
+term = "Data Sovereignty"
+definition = "Keeping control of where data and code live and who can reach them, enforced by architecture (self-hosting, isolation, mirrors) rather than by vendor policy."
+projects = ["07", "19", "22", "26", "06"]
+roles = ["solutions-architecture", "security-engineering", "platform-operations"]
+
+[[terms]]
+term = "Defence in Depth"
+definition = "Layering independent controls (network, kernel, identity, application, audit) so one failure does not expose the whole system."
+projects = ["05", "06", "07", "18"]
+roles = ["security-engineering"]
+
+[[terms]]
+term = "DEFCON 0 (Zero-Egress Containment)"
+definition = "This portfolio's name for a sandbox whose outbound internet access is dropped at the host firewall by default and only allowed through named, isolated tunnels."
+projects = ["06", "01", "26"]
+roles = ["security-engineering", "platform-operations"]
+
+[[terms]]
+term = "Distributed Key Generation (DKG)"
+definition = "Creating a cryptographic key in pieces across parties so no single party ever holds the whole private key."
+projects = ["14"]
+roles = ["security-engineering"]
+
+[[terms]]
+term = "Dual-Database Isolation"
+definition = "Keeping credentials and audit data in a separate database from day-to-day business data, so routine backups and access never touch secrets."
+projects = ["08"]
+roles = ["security-engineering", "software-engineering"]
+
+[[terms]]
+term = "Dynamic Schema Reflection"
+definition = "Reading a database's own metadata at runtime to build views and forms, without generated models or ORM mappings."
+projects = ["17"]
+roles = ["software-engineering"]
+
+[[terms]]
+term = "Edge Ingress (Reverse Proxy)"
+definition = "The front door (Caddy, Nginx) that terminates TLS, applies limits and routes traffic before it reaches application services."
+projects = ["05", "07", "12", "01"]
+roles = ["platform-operations"]
+
+[[terms]]
+term = "Engine + Paint Delivery"
+definition = "This portfolio's commercial model: a reusable, owned backend engine wrapped in a client-specific interface, so delivery is fast and core IP is retained."
+projects = ["05", "12", "01"]
+roles = ["solutions-architecture"]
+
+[[terms]]
+term = "Ephemeral Toolchain"
+definition = "Running build tools inside throwaway containers so nothing is installed on the host and every run starts from the same state."
+projects = ["23", "26", "09", "24"]
+roles = ["platform-operations", "frontend-product"]
+
+[[terms]]
+term = "ESC/POS"
+definition = "The command language receipt and kitchen printers speak, including raster image modes."
+projects = ["02"]
+roles = ["software-engineering"]
+
+[[terms]]
+term = "Exponential Backoff"
+definition = "Waiting progressively longer between retries after a rate-limit or failure response, so clients recover without hammering the service."
+projects = ["24", "19", "11"]
+roles = ["software-engineering", "platform-operations"]
+
+[[terms]]
+term = "Fail-Open"
+definition = "Choosing to pass traffic through unchanged when an optional processing step fails, because stopping service costs more than skipping the step."
+projects = ["02"]
+roles = ["software-engineering", "platform-operations"]
+
+[[terms]]
+term = "Feedback Loop (Balancing / Reinforcing)"
+definition = "A balancing loop pushes a system back toward a target (e.g. throttling); a reinforcing loop amplifies change (e.g. automation freeing time for more automation)."
+projects = ["26", "01", "04"]
+roles = ["solutions-architecture"]
+
+[[terms]]
+term = "GPU Passthrough"
+definition = "Giving a container or VM direct, fenced access to a physical GPU (or a slice of one) for local model inference."
+projects = ["06"]
+roles = ["platform-operations"]
+
+[[terms]]
+term = "Hazard Filtering"
+definition = "The redaction process used to build this portfolio: extracting the architecture of private work while stripping client identifiers and proprietary detail."
+projects = ["26"]
+roles = ["security-engineering", "solutions-architecture"]
+
+[[terms]]
+term = "Headless Browser Automation"
+definition = "Driving a real browser engine without a screen (chromedp, Playwright) to render pages, extract data or print PDFs."
+projects = ["11", "08"]
+roles = ["software-engineering"]
+
+[[terms]]
+term = "Host-Based Routing"
+definition = "Serving different sites or tenants from one deployment by reading the requested hostname."
+projects = ["12", "05"]
+roles = ["frontend-product", "solutions-architecture"]
+
+[[terms]]
+term = "Human-in-the-Loop (HITL)"
+definition = "Automation that proposes actions but waits for an explicit human approval before high-impact changes are made."
+projects = ["01"]
+roles = ["solutions-architecture", "security-engineering"]
+
+[[terms]]
+term = "Idempotent Provisioning"
+definition = "Setup scripts that can be re-run safely and converge on the same result, usually guarded by pre-flight checks."
+projects = ["20", "07"]
+roles = ["platform-operations"]
+
+[[terms]]
+term = "Infrastructure as Code (OpenTofu, Ansible)"
+definition = "Declaring infrastructure in versioned files so environments are reproducible, reviewable and checked for drift."
+projects = ["07", "06", "01"]
+roles = ["platform-operations"]
+
+[[terms]]
+term = "LXD System Containers"
+definition = "Containers that run a full Linux userland like a lightweight VM. Run unprivileged, they are the main isolation unit across these projects."
+projects = ["07", "06", "20", "01"]
+roles = ["platform-operations", "security-engineering"]
+
+[[terms]]
+term = "Merkle Tree"
+definition = "A tree of hashes that lets many documents be proven with one root hash, so batches can be anchored on-chain cheaply."
+projects = ["14"]
+roles = ["security-engineering", "software-engineering"]
+
+[[terms]]
+term = "Message Queue (BullMQ / Redis)"
+definition = "Handing slow work to background workers through a queue so the user-facing request returns quickly."
+projects = ["03"]
+roles = ["software-engineering"]
+
+[[terms]]
+term = "Modular Monolith"
+definition = "One deployable application with clear internal modules. Simpler and faster to run than microservices when the team and load allow."
+projects = ["25", "12", "22"]
+roles = ["software-engineering", "solutions-architecture"]
+
+[[terms]]
+term = "Multi-Tenancy"
+definition = "Serving many customers from one platform while keeping their data separate, here by schema, host or organisational scope."
+projects = ["05", "04", "06", "12"]
+roles = ["software-engineering", "security-engineering", "solutions-architecture"]
+
+[[terms]]
+term = "Network Namespace Egress"
+definition = "Forcing a workload's outbound traffic through a dedicated network namespace and tunnel (WireGuard, Tailscale) so it never touches the host's WAN address."
+projects = ["07", "06"]
+roles = ["platform-operations", "security-engineering"]
+
+[[terms]]
+term = "Observability"
+definition = "Metrics, probes and dashboards (Prometheus, Grafana, Gatus) that show whether a system is healthy without logging into it."
+projects = ["07", "24"]
+roles = ["platform-operations"]
+
+[[terms]]
+term = "OIDC Single Sign-On"
+definition = "Central identity (here Authentik) that every internal service trusts, instead of each keeping its own passwords."
+projects = ["07"]
+roles = ["security-engineering", "platform-operations"]
+
+[[terms]]
+term = "Optical Character Recognition (OCR)"
+definition = "Turning images of text into machine-readable text, here run in memory on decoded printer images."
+projects = ["02"]
+roles = ["software-engineering"]
+
+[[terms]]
+term = "Optimistic Concurrency Control"
+definition = "Letting edits proceed and rejecting any based on a stale version (HTTP 409), instead of locking records while people work."
+projects = ["08"]
+roles = ["software-engineering"]
+
+[[terms]]
+term = "Pessimistic Locking"
+definition = "Reserving a resource before using it so two buyers can never be given the same item, at the cost of some throughput."
+projects = ["03"]
+roles = ["software-engineering"]
+
+[[terms]]
+term = "Process Supervision (Watchdog)"
+definition = "An external health check that restarts hung or leaking workers automatically (here through PM2)."
+projects = ["11"]
+roles = ["platform-operations"]
+
+[[terms]]
+term = "Pull Mirror"
+definition = "A self-hosted copy of a repository that keeps fetching from the original, so code survives an upstream outage or account loss."
+projects = ["19"]
+roles = ["platform-operations"]
+
+[[terms]]
+term = "Raft Consensus"
+definition = "A protocol that keeps cluster nodes agreeing on state as long as a majority (quorum) is reachable."
+projects = ["07"]
+roles = ["platform-operations"]
+
+[[terms]]
+term = "RCON (Remote Console)"
+definition = "A game-server administration protocol, kept off the public internet here behind an authenticated web bridge."
+projects = ["18"]
+roles = ["platform-operations", "security-engineering"]
+
+[[terms]]
+term = "Role-Based Access Control (RBAC)"
+definition = "Granting permissions to roles rather than individuals, scoped per tenant or domain (Casbin in OASIS)."
+projects = ["05", "04", "07"]
+roles = ["security-engineering", "software-engineering"]
+
+[[terms]]
+term = "Safeguarding"
+definition = "UK duty-of-care obligations for vulnerable people, which shape what must be recorded and who may see it."
+projects = ["21", "04"]
+roles = ["solutions-architecture"]
+
+[[terms]]
+term = "Schema-per-Tenant Isolation"
+definition = "Giving each customer their own PostgreSQL schema and selecting it per transaction, so a missed WHERE clause cannot leak another tenant's data."
+projects = ["05"]
+roles = ["software-engineering", "security-engineering"]
+
+[[terms]]
+term = "Secret Brokerage (OpenBao)"
+definition = "Issuing short-lived credentials to workloads at runtime instead of storing keys on disk or in environment files."
+projects = ["06", "07"]
+roles = ["security-engineering", "platform-operations"]
+
+[[terms]]
+term = "Server-Sent Events (SSE)"
+definition = "A one-way stream from server to browser over plain HTTP, used for live dashboards without WebSocket overhead."
+projects = ["01"]
+roles = ["software-engineering", "frontend-product"]
+
+[[terms]]
+term = "Server-Side Rendering (SSR)"
+definition = "Rendering pages on the server so they load fast and index well, then hydrating them in the browser when needed."
+projects = ["12", "01", "03", "21", "25"]
+roles = ["frontend-product"]
+
+[[terms]]
+term = "Smart Contract"
+definition = "Code deployed to a blockchain (Solidity on the EVM here) whose execution and results are publicly verifiable."
+projects = ["14"]
+roles = ["software-engineering"]
+
+[[terms]]
+term = "Verifiable Random Draw (PRNG)"
+definition = "Seeded pseudo-random selection with recorded inputs, so a prize draw can be proven fair after the fact."
+projects = ["03"]
+roles = ["security-engineering", "software-engineering"]
+
+[[terms]]
+term = "Voice Stealing"
+definition = "Reassigning the oldest or quietest synth voice when polyphony runs out, avoiding CPU spikes and audible clicks."
+projects = ["15"]
+roles = ["frontend-product"]
+
+[[terms]]
+term = "Web Audio API"
+definition = "The browser's built-in audio engine, which runs node graphs on a dedicated real-time thread."
+projects = ["15"]
+roles = ["frontend-product"]
+
+[[terms]]
+term = "Web GIS (Leaflet)"
+definition = "Interactive maps in the browser built on open map data, without a paid map vendor."
+projects = ["09"]
+roles = ["frontend-product"]
+
+[[terms]]
+term = "Webhook"
+definition = "An HTTP callback one system sends another when something happens, used here as both an ingress and an alert channel."
+projects = ["01", "24"]
+roles = ["software-engineering"]
+
+[[terms]]
+term = "Workload Sharding"
+definition = "Splitting a large job (here IP ranges) into deterministic pieces that can run in parallel across machines."
+projects = ["10"]
+roles = ["software-engineering", "platform-operations"]
+
+[[terms]]
+term = "Write-Ahead Log (WAL)"
+definition = "Writing changes to a log before applying them, so a crash never loses an acknowledged event. SQLite's WAL mode also allows readers during writes."
+projects = ["01"]
+roles = ["software-engineering"]
+
+[[terms]]
+term = "Zero-Downtime Deployment"
+definition = "Releasing a new version without dropping users, for example by rolling containers over a private network."
+projects = ["08"]
+roles = ["platform-operations"]
+
+[[terms]]
+term = "Zero-Trust Networking"
+definition = "Treating every request as untrusted until identity is verified, regardless of which network it comes from."
+projects = ["07", "05"]
+roles = ["security-engineering", "platform-operations"]
+
+[[terms]]
+term = "Zod Runtime Contracts"
+definition = "Validating data shapes at runtime in TypeScript so a malformed event is rejected at the boundary instead of breaking the UI."
+projects = ["01"]
+roles = ["frontend-product", "software-engineering"]
