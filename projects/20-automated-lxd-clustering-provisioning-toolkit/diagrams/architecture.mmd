@@ -6,25 +6,25 @@ flowchart TB
     end
 
     subgraph NodeCluster["Heterogeneous Multi-Node LXD Cluster"]
-        subgraph LeaderNode["Primary Node (01-eds-dedi)"]
-            InitScript["provision-dedi.sh / 3-join-dedi.sh"]
+        subgraph LeaderNode["Primary Node (Primary bare-metal host)"]
+            InitScript["provision-primary.sh / 3-join-primary.sh"]
             LXDLeader["LXD Primary Daemon & Trust Authority"]
             StoragePool["ZFS / Btrfs Storage Pool"]
         end
 
-        subgraph EdgeNode1["Edge Node 1 (z-workstation)"]
+        subgraph EdgeNode1["Edge Node 1 (Edge workstation)"]
             JoinWS["1-init-workstation.sh"]
             LXDNode1["LXD Cluster Member"]
         end
 
-        subgraph EdgeNode2["Edge Node 2 (z-nuc)"]
-            JoinNUC["2-join-nuc.sh"]
+        subgraph EdgeNode2["Edge Node 2 (Edge mini-PC)"]
+            JoinEdgeMini["2-join-edge-mini.sh"]
             LXDNode2["LXD Cluster Member"]
         end
     end
 
     subgraph ClusterFabric["Unified Virtual Network Fabric"]
-        LXDNetBridge["lxdbr0 Distributed Bridge (10.250.0.0/24)"]
+        LXDNetBridge["lxdbr0 distributed bridge (private /24)"]
         MeshRouting["Direct Wire / Tailscale Inter-Node Mesh"]
     end
 
@@ -34,11 +34,11 @@ flowchart TB
 
     KitGenerator --> InitScript
     KitGenerator --> JoinWS
-    KitGenerator --> JoinNUC
+    KitGenerator --> JoinEdgeMini
 
     InitScript --> LXDLeader
     JoinWS -->|"Trust Handshake (Token / TLS)"| LXDLeader
-    JoinNUC -->|"Trust Handshake (Token / TLS)"| LXDLeader
+    JoinEdgeMini -->|"Trust Handshake (Token / TLS)"| LXDLeader
 
     LXDLeader --> LXDNetBridge
     LXDNode1 --> LXDNetBridge

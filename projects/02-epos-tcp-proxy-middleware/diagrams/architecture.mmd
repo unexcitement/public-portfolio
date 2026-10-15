@@ -1,5 +1,5 @@
 flowchart TB
-    subgraph EdgeNetwork["Physical EPOS Hardware Network (LAN 172.16.0.0/24)"]
+    subgraph EdgeNetwork["Physical EPOS Hardware Network (Private LAN segment)"]
         Till1["EPOS Till 1 (Fixed Station)"]
         Till2["EPOS Till 2 (Mobile Tablet / Bar)"]
         TillN["EPOS Till N"]
@@ -28,7 +28,7 @@ flowchart TB
     end
 
     subgraph PhysicalEgress["Hardware Output Perimeter"]
-        ThermalPrinter["Industrial ESC/POS Thermal Printer (172.16.0.11:9100)"]
+        ThermalPrinter["Industrial ESC/POS Thermal Printer (private LAN, raw print port 9100)"]
         KitchenStation["Kitchen Order Display / Kitchen Thermal Printer"]
     end
 

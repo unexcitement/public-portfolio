@@ -11,7 +11,7 @@ flowchart TB
         end
     end
 
-    subgraph HostHypervisor["Bare-Metal Host Hypervisor Perimeter (01-eds-dedi)"]
+    subgraph HostHypervisor["Bare-Metal Host Hypervisor Perimeter (Primary bare-metal host)"]
         DaemonManager["LXD 6.x / Docker Engine Supervisor"]
         
         subgraph NetworkIsolation["Zero-Egress Network Isolation (DEFCON 0)"]

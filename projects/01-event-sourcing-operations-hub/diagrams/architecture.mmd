@@ -4,7 +4,7 @@ flowchart TB
         ReverseProxy["Caddy Edge Ingress (TLS Termination & Rate Limiting)"]
     end
 
-    subgraph HostBoundary["Host Security Perimeter (01-eds-dedi)"]
+    subgraph HostBoundary["Host Security Perimeter (Primary bare-metal host)"]
         subgraph ProxyPerimeter["Go Proxy Middleware Service (:8080)"]
             IngressChan["Non-blocking Buffered Ingress Channel"]
             WALEngine["WAL Commit Engine (Pessimistic Sync)"]
@@ -12,7 +12,7 @@ flowchart TB
         end
 
         subgraph StorageLayer["Immutable Event Storage"]
-            SQLiteWAL[("SQLite WAL Append-Only Ledger (nerve.db)")]
+            SQLiteWAL[("SQLite WAL Append-Only Ledger (event ledger schema)")]
         end
 
         subgraph UIBoundary["Presentation & Control Surface (:3000)"]
