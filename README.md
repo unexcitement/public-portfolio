@@ -8,6 +8,22 @@ As highlighted throughout my notebook (Used as sources), I do not just write cod
 
 ---
 
+## Start Here
+
+Short on time? Pick the guide that matches what you are looking for. Each one highlights the most relevant projects and defines the terms that matter for that role.
+
+| If you are looking for... | Start with |
+|---|---|
+| Infrastructure, DevOps or SRE | [Platform Operations & SRE](docs/roles/platform-operations.md) |
+| Backend and distributed systems | [Software Engineering](docs/roles/software-engineering.md) |
+| Isolation, identity and audit | [Security Engineering](docs/roles/security-engineering.md) |
+| Interactive and real-time interfaces | [Frontend & Product Engineering](docs/roles/frontend-product.md) |
+| Someone to design and deliver a system for your organisation | [Solutions Architecture & Consulting](docs/roles/solutions-architecture.md) |
+
+New to a term? The [Glossary](GLOSSARY.md) defines every pattern and technology used here and links each one to the projects that use it.
+
+---
+
 ## Core Architectural Paradigms
 
 - **Sovereign AI & Autonomous Control Planes**: I architect bi-directional, self-improving execution platforms utilizing Nuxt 3, Go Proxy middleware, and SQLite event-sourced ledgers.
@@ -72,6 +88,24 @@ docker run --rm -v "$(pwd):/data" minlag/mermaid-cli \
     -i /data/projects/01-event-sourcing-operations-hub/diagrams/architecture.mmd \
     -o /data/projects/01-event-sourcing-operations-hub/diagrams/architecture.svg
 ```
+
+---
+
+## Repository Map
+
+| File | What it is |
+|---|---|
+| [README.md](README.md) | This page: overview and project catalog |
+| [humans.md](humans.md) | Who I am, how I work and what I believe about systems |
+| [GLOSSARY.md](GLOSSARY.md) | Every term used here, defined and linked to projects |
+| [docs/roles/](docs/roles/README.md) | The portfolio filtered by job role |
+| [ROADMAP.md](ROADMAP.md) | Personal, professional and business direction |
+| [CHANGELOG.md](CHANGELOG.md) | What has changed in this portfolio and when |
+| [CONTRIBUTING.md](CONTRIBUTING.md) | How to get in touch about roles, projects or feedback |
+| [SECURITY.md](SECURITY.md) | What is redacted and how to report a suspected disclosure |
+| [LICENSE](LICENSE) | All rights reserved; published for evaluation only |
+
+The glossary and role pages are generated from `docs/glossary.toml`. After editing it, run `python3 scripts/build_glossary.py`.
 
 ---
 

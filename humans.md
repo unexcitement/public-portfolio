@@ -50,5 +50,16 @@ Neurodivergent processing (AuDHD) serves as cognitive middleware. By intuitively
 *   **Presentation & Command Surfaces:** Nuxt 3, Vue 3, Server-Sent Events (SSE), SQLite WAL Event Ledgers, Zod Runtime Contracts
 *   **Dedicated Local Compute:** Hardware GPU Passthrough, vLLM, Ollama, Local Inference Engines
 
+## /* CONTACT */
+*   **Preferred channel:** ✍️ To fill in (email, LinkedIn or booking link)
+*   **Response style:** Asynchronous and written first. Context up front gets a better reply.
+*   **Disclosure concerns:** See [SECURITY.md](SECURITY.md).
+
+## /* SEE ALSO */
+*   [README.md](README.md): the project catalog
+*   [GLOSSARY.md](GLOSSARY.md) and [the portfolio by role](docs/roles/README.md)
+*   [ROADMAP.md](ROADMAP.md): where I am heading
+*   [CONTRIBUTING.md](CONTRIBUTING.md): how to engage
+
 ---
 *"If you don't map your systems, your systems will map you."* — Donella Meadows
