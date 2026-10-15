@@ -18,7 +18,7 @@ flowchart TB
         end
 
         subgraph EdgeNode2["Edge Node 2 (Edge mini-PC)"]
-            JoinNUC["2-join-edge-mini.sh"]
+            JoinEdgeMini["2-join-edge-mini.sh"]
             LXDNode2["LXD Cluster Member"]
         end
     end
@@ -34,11 +34,11 @@ flowchart TB
 
     KitGenerator --> InitScript
     KitGenerator --> JoinWS
-    KitGenerator --> JoinNUC
+    KitGenerator --> JoinEdgeMini
 
     InitScript --> LXDLeader
     JoinWS -->|"Trust Handshake (Token / TLS)"| LXDLeader
-    JoinNUC -->|"Trust Handshake (Token / TLS)"| LXDLeader
+    JoinEdgeMini -->|"Trust Handshake (Token / TLS)"| LXDLeader
 
     LXDLeader --> LXDNetBridge
     LXDNode1 --> LXDNetBridge
