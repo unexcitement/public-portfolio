@@ -8,6 +8,17 @@ As highlighted throughout my notebook (Used as sources), I do not just write cod
 
 ---
 
+## Repository Documentation
+
+- 🧭 **[Project Index](INDEX.md)** — Filter and navigate all 26 projects by engineering role, architectural concept, technology stack, and industry sector.
+- 📖 **[Technical Glossary](GLOSSARY.md)** — Architectural lexicon, systems dynamics concepts, and sovereign platform terminology.
+- 🛡️ **[Security & Disclosure Policy](SECURITY.md)** — Defence-in-depth principles, abridged threat model, and hazard-filtering redaction policy.
+- 📐 **[Systems Architecture Principles](ARCHITECTURE.md)** — Foundational design rules, Donella Meadows dual-paradigm modelling, default stack matrix, and retrospective lessons.
+- 🗺️ **[Strategic Roadmap](ROADMAP.md)** — Multi-horizon roadmap across personal, professional, business, and portfolio development tracks.
+- 👤 **[The Architect](humans.md)** — Background, AuDHD cognitive architecture, and codified advisory schemas.
+
+---
+
 ## Core Architectural Paradigms
 
 - **Sovereign AI & Autonomous Control Planes**: I architect bi-directional, self-improving execution platforms utilizing Nuxt 3, Go Proxy middleware, and SQLite event-sourced ledgers.
