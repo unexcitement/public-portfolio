@@ -75,11 +75,18 @@ I design architectures around realistic operational failure modes and boundary v
 
 ## 3. Where I Break My Own Rules
 
-Dogmatism in security leads to paralyzed engineering. In practice, I knowingly accept deliberate trade-offs:
+My architectural and security statements represent uncompromising ideals; the real world is messy. The statement is the end goal; the contradictions are the barriers and pragmatic trade-offs imposed by reality. Dogmatism in security leads to paralysed engineering. Where theory meets production constraints, I accept deliberate, bounded compromises:
 
-1. **Rapid prototyping and exploratory spikes:** When proving out a speculative architectural concept, I trade granular KMS secret leasing and rigid multi-layer network fencing for development velocity. Setting up multi-node Vault clusters and custom egress namespaces for an experiment that might be deleted within 48 hours is premature optimization. Security boundaries are hardened once an architecture proves viable.
-2. **Single-node SQLite over premature distributed clusters:** For moderate-throughput internal services, a single-node SQLite database running in WAL mode with local automated backups is vastly simpler, faster, and more reliable than a multi-node distributed database cluster. Distributed consensus brings operational surface area; I introduce distributed databases only when write contention demands it.
-3. **Anecdotes and case histories:** `✍️ To fill in: case studies from content pipeline`
+1. **Rapid prototyping and exploratory spikes:**
+   When validating a speculative concept, I trade granular KMS secret leasing and rigid multi-layer network fencing for development velocity. Spinning up multi-node secret brokers and custom egress namespaces for an experiment that might be discarded within 48 hours is premature optimization. Security boundaries are hardened once an architectural thesis demonstrates commercial or operational value.
+2. **Single-node SQLite over premature distributed clusters:**
+   For moderate-throughput services, a single-node SQLite database running in WAL mode on local NVMe storage with automated backups is vastly simpler, faster, and more resilient than a multi-node distributed database cluster. Distributed consensus introduces significant operational surface area and failure modes; I introduce distributed infrastructure only when concurrent write contention mathematically demands it.
+3. **Single-use developer tooling vs automated secret brokers:**
+   I mandate that production systems fetch short-lived dynamic credentials from centralized secret managers (such as OpenBao) without persistent disk storage or CLI injection. However, for internal, single-use developer scripts—such as asset synchronizers or source repository cloners running in local ephemeral containers—wiring a full OpenBao authentication exchange would be pure over-engineering. For one-off developer utilities, passing an authenticated token as an explicit command-line argument is an acceptable, pragmatic concession.
+4. **Multi-pass hazard filtering and iterative redaction:**
+   Ideal security dictates that no private operational identifier ever enters version control. In reality, sanitizing years of commercial enterprise builds is an iterative, multi-tiered process. High-security hazards (client names, proprietary business logic, live credentials, production database endpoints, and public IPs) were systematically stripped prior to initial publication. Lower-tier operational metadata (such as internal hostnames and private subnet ranges) were identified in subsequent review passes, pruned from current files, and purged from git history using `git-filter-repo`. A living engineering repository acknowledges that redaction depth evolves across successive filtering passes.
+5. **Managed edge routing vs sovereign purism:**
+   While I enforce absolute data sovereignty and zero-egress sandboxes for core compute, intellectual property, and database state on bare metal, relying on edge vendors (such as Cloudflare for DDoS mitigation and public DNS, or Tailscale for zero-trust mesh routing) is a necessary operational compromise at my current scale. Building a globally distributed Anycast network or operating a multi-region physical presence for portfolio traffic would divert focus from core systems engineering. Core IP and state remain sovereign; edge routing leverages managed networks until self-hosted alternatives are operationally justified.
 
 ---
 
@@ -109,13 +116,13 @@ To ensure technical and architectural clarity, profiles deliberately show:
 If you believe any content in this repository identifies a confidential client, exposes a live system, or includes information that should remain private:
 
 1. **Do not** open a public issue or pull request that quotes or repeats the sensitive material.
-2. Contact me privately at `✍️ To fill in` (verified asynchronous channels).
-3. Specify the exact file path and line number, along with a brief explanation of why the item is sensitive.
+2. Contact me privately via asynchronous communication channels (reachable via the contact links listed in [humans.md](humans.md) or direct platform messaging).
+3. Specify the exact file path, commit hash, and line number, along with a brief explanation of why the item is sensitive.
 
-I aim to acknowledge reports within `✍️ To fill in` and will promptly sanitize confirmed disclosures, including rewriting repository history where necessary.
+I aim to acknowledge verified disclosures within 48 hours and will promptly sanitize confirmed issues, including rewriting repository history where necessary.
 
 ---
 
 ## 6. Scope
 
-This policy covers the contents of this repository (`unexcitement/public-portfolio`). Tooling and helper scripts located under `scripts/` are intended solely for building and compiling portfolio assets and are not designed to execute against external environments.
+This policy covers the contents of this repository (`unexcitement/public-portfolio`). Tooling and helper scripts located under `scripts/` run locally inside ephemeral containers to compile assets, validate schemas, and clone source repositories via external git APIs; they are not designed to execute against or mutate external infrastructure.

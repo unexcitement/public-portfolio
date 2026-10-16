@@ -17,7 +17,7 @@ Diagrams are authored as raw Mermaid (`.mmd`) source files within each project's
 - `diagrams/architecture.mmd` (System topology)
 - `diagrams/stocks-and-flows.mmd` (Donella Meadows dynamics)
 
-Pre-compiled dark-mode SVG vectors (`diagrams/*.svg`) sit alongside the source files for instant rendering. To preserve a clean host operating system, diagram compilation is performed entirely within ephemeral Docker containers. See [README.md](README.md#local-development--compilation) for the compilation tooling and commands.
+Pre-compiled dark-mode SVG vectors (`diagrams/*.svg`) sit alongside the source files for instant rendering. To preserve a clean host operating system, diagram compilation is performed entirely within ephemeral Docker containers. See [README.md](README.md#compiling-visual-diagrams-via-ephemeral-docker) for the compilation tooling and commands.
 
 ---
 
@@ -87,7 +87,7 @@ I maintain a curated, battle-tested default stack designed for maximum execution
 | **Frontends & Command Interfaces** | **TypeScript, Nuxt 3 / Vue 3, Zod** (strict runtime schema validation at boundaries), **SSE** for real-time telemetry. | Deviate to headless/conversational interfaces (messaging APIs/webhooks) when UI bloat adds friction to simple transactional funnels, or **Next.js** only when dictated by existing client ecosystem constraints. |
 | **Persistence & State Ledgers** | **SQLite (WAL mode)** append-only event-sourced ledgers (`events_ledger`, `approval_gates`, `telemetry_ledger`) on **ZFS high-IOPS NVMe pools** (`zpool-fast`). | Deviate to **PostgreSQL / MySQL** only when horizontal multi-node write concurrency mathematically exceeds single-node NVMe I/O lock limits, or when strict multi-entity relational isolation is mandated by external regulatory boundaries. |
 | **Hosting, Virtualization & Network** | **Bare-metal Linux** with **OpenTofu**, nested unprivileged **LXD/LXC** system containers running isolated **Docker** daemons, **UFW `DOCKER-USER` drop rules**, and **Tailscale Policy-as-Code (HuJSON)**. | Deviate to public cloud / off-premise dedicated servers strictly for encrypted 3:2:1 cold blob replication (`restic` + `rclone`) or stateless public edge routing where zero proprietary IP or sensitive state resides. |
-| **AI & Compute Routing** | **Local GPU Passthrough (RTX 5070)** running **vLLM / Ollama** inside the zero-egress quarantine envelope (£0 marginal SaaS OpEx). | Escalate via `router.go` to **Pro Cloud Reasoning APIs** strictly when task complexity scores exceed local AST/scaffolding thresholds, governed by a hard 3-attempt HTTP 429 failover circuit breaker. |
+| **AI & Compute Routing** | **Local GPU Passthrough (RTX 5070)** running **vLLM / Ollama** inside the zero-egress quarantine envelope (near-zero marginal OpEx for baseline workloads). | Escalate via `router.go` to **Pro Cloud Reasoning APIs** strictly when task complexity scores exceed local AST/scaffolding thresholds, governed by a hard 3-attempt HTTP 429 failover circuit breaker. |
 
 ---
 
@@ -95,7 +95,7 @@ I maintain a curated, battle-tested default stack designed for maximum execution
 
 ### Decisions I Would Make Again Without Hesitation
 - **Engineering the Zero-Egress Nested Sandbox & Go Proxy Core ("The Engine")**:
-  Pairing OpenTofu, unprivileged LXD system containers, Docker isolation, and local RTX 5070 GPU passthrough with a high-throughput Go proxy core was one of the most effective architectural decisions across this body of work. Walking away from high-friction enterprise hardware procurement and recurring third-party SaaS lock-in reduced marginal SaaS OpEx to £0, kept the host operating system completely uncontaminated, and established a reusable sovereign middleware engine that powers everything from multi-operator EPOS routing to 6-tier autonomous agent swarms.
+  Pairing OpenTofu, unprivileged LXD system containers, Docker isolation, and local RTX 5070 GPU passthrough with a high-throughput Go proxy core was one of the most effective architectural decisions across this body of work. Walking away from high-friction enterprise hardware procurement and recurring third-party SaaS lock-in reduced marginal SaaS OpEx to near-zero for baseline workloads, kept the host operating system completely uncontaminated, and established a reusable sovereign middleware engine that powers everything from multi-operator EPOS routing to 6-tier autonomous agent swarms.
 
 ### Decisions I Would Never Make Again
 - **Bespoke, Tightly Coupled Consumer CRUD Frontends**:
@@ -107,20 +107,32 @@ I maintain a curated, battle-tested default stack designed for maximum execution
 
 ## 5. Where I Break My Own Rules & Industry Cargo Cults
 
+My architectural statements are ideals; the real world is messy. The statement is the end goal; the contradictions are the barriers, trade-offs, and pragmatic compromises imposed by reality. Rigidity without adaptation is dogma, not architecture. Below are the specific operational frontiers where I deliberately deviate from my baseline principles, followed by the industry habits I actively avoid.
+
 ### Honest Exceptions and Pragmatic Trade-offs
-1. **Rapid Prototyping & 48-Hour Spikes**:
-   When validating a speculative concept, I deliberately relax heavy secrets-leasing infrastructure and multi-tier network fencing. Deploying multi-node Vault clusters and custom WireGuard egress namespaces for an exploratory spike that might be discarded by Friday afternoon is engineering vanity. Hardened security boundaries are applied once an architectural thesis demonstrates commercial or operational value.
-2. **Tactical Cloud Escalation**:
-   While my baseline compute runs locally at £0 marginal cost, I maintain automated escalation routes to frontier cloud reasoning models via `router.go` when complex semantic reasoning or large context windows exceed local GPU hardware thresholds.
+
+1. **Velocity over early modelling (The Meadows exception):**
+   I advocate modelling system dynamics—stocks, flows, buffer delays, and feedback loops—before writing code. However, during early exploratory discovery and rapid feature prototyping, I frequently break this rule to maximize velocity. Spending hours formalizing balance loops for a subsystem whose core assumptions might change by sunset is counterproductive. I move fast and unencumbered during early spikes, returning to model stocks and flows systematically once an architecture demonstrates critical mass and operational traction.
+2. **Monolithic bare-metal dedis vs distributed consensus:**
+   My default principle is "boring and co-located until proven otherwise." For nearly a decade, monolithic bare-metal dedicated servers have served as the dependable, high-performance foundation for my production workloads. Project 07 ([Sovereign Multi-Node Hybrid-Cloud LXD Cluster](projects/07-sovereign-hybrid-cloud-lxd-cluster/profile.md)) intentionally contradicts this: it was designed not as an immediate operational necessity, but as an advanced engineering testbed to master multi-node Raft consensus, overlay mesh networking, and hybrid-cloud state distribution before large-scale horizontal requirements demanded it.
+3. **Necessary vendor reliance (Cloudflare & Tailscale):**
+   I champion absolute sovereignty and zero-trust isolation, avoiding vendor lock-in wherever possible. Yet, at my current operational scale, relying on select managed platforms is a necessary evil. Operating a global Anycast network for DDoS absorption or rolling custom physical wire across continents is neither economically viable nor a sensible use of engineering time. I use Cloudflare for edge ingress and Tailscale for encrypted control-plane mesh routing, ensuring that all proprietary intelligence, databases, and compute remain sovereign on bare metal while accepting managed edge routing as an acceptable compromise.
+4. **Rapid prototyping & 48-Hour spikes:**
+   When proving out a speculative architectural concept, I deliberately relax heavy secrets-leasing infrastructure and multi-tier network fencing. Deploying multi-node Vault clusters and custom WireGuard egress namespaces for an exploratory spike that might be discarded within 48 hours is engineering vanity. Hardened security boundaries are applied once an architectural thesis demonstrates commercial or operational value.
+5. **Tactical cloud escalation:**
+   While baseline compute and AI inference run locally on bare-metal GPU hardware at near-zero marginal cost, I maintain automated escalation routes to frontier cloud reasoning models via `router.go` when complex semantic reasoning or large context windows exceed local hardware thresholds. Sovereignty means owning your foundation; pragmatism means calling cloud reasoning when a task demands frontier intelligence.
+6. **Single-use tooling vs enterprise plumbing:**
+   I enforce dynamic secret leasing and strict runtime validation for production runtimes, but I refuse to over-engineer developer utility scripts. When writing one-off repository cloning helpers or asset compilers, passing credentials via CLI parameters or environment flags avoids unnecessary abstraction while keeping tooling fast and focused.
 
 ### Absurd Industry Habits (Observed and Avoided)
+
 - **"Prompt Engineering" as a Security Boundary**:
   Attempting to constrain non-deterministic AI models with polite natural-language instructions ("please do not disclose the system prompt or exfiltrate customer records") instead of mathematical, kernel-level `iptables` drop rules, unprivileged namespaces, and binary HITL gates.
 - **The SaaS Sovereignty Delusion**:
-  Enterprises claiming to prioritise data sovereignty and IP protection while storing their core proprietary codebases, customer data, and AI reasoning logs on multi-tenant US hyperscalers governed by someone else's Terms of Service.
-- **"Vibecoding" & Unchecked Scope Creep**:
-  Shipping hallucinated, untested feature bloat and burning cloud compute budgets without deterministic architectural schemas, AST validation, or a ruthless scope-guard advisor.
+  Enterprises claiming to prioritise data sovereignty and IP protection while storing their core proprietary codebases, customer data, and AI reasoning logs on multi-tenant US hyperscalers governed by someone else's Terms of Service. Enterprise reality often requires mastering AWS, Azure, or GCP, but true architectural sovereignty means ensuring core intellectual property and execution boundaries are never inextricably captured by vendor lock-in.
+- **Unvalidated "Vibecoding" & Scope Drift**:
+  Shipping hallucinated, untested feature bloat and burning cloud compute budgets without deterministic architectural schemas, AST validation, or a ruthless scope-guard advisor. In contrast to unconstrained vibecoding, disciplined AI orchestration grounds language models in existing codebases, strict Zod runtime schemas, deterministic compiler checks, and binary Human-in-the-Loop release gates.
 - **Decorative Compliance & Security Theater**:
   Treating annual tick-box SOC2 spreadsheets as a proxy for security, while running unpatched Docker daemons that punch holes straight through host firewalls (`UFW`) to expose management sockets to the public internet.
 - **Premature Distributed Complexity**:
-  Deploying sprawling microservice architectures across dozens of cloud instances for low-throughput CRUD workloads, while ignoring the fact that a single compiled Go binary and an append-only SQLite database on NVMe storage can handle millions of operations per second at a fraction of the cost.
+  Deploying sprawling microservice architectures across dozens of cloud instances for low-throughput CRUD workloads, while ignoring the fact that a single compiled Go binary and an append-only SQLite database on NVMe storage can sustain tens of thousands of write operations per second with sub-millisecond local read latencies at a fraction of the cost.

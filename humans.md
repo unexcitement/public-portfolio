@@ -14,6 +14,7 @@
 **Methodology:** Applied Systems Theory (Donella Meadows' dynamics) augmented by deterministic AI orchestration  
 **Collaboration & Inquiries:** Open to high-leverage architectural advisory, technical leadership, and sovereign systems design. Reachable via asynchronous communication and verified channels.
 
+<a id="the-cognitive-augmentation-framework"></a>
 ## /* THE COGNITIVE AUGMENTATION FRAMEWORK */
 *Rather than ad-hoc prompting, we codify decision heuristics into structured, machine-executable YAML schemas. Automated agents act as specialized advisors, ensuring every operational decision aligns with architectural integrity, strategic focus, and disciplined execution.*
 

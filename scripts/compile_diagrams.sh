@@ -10,7 +10,7 @@ set -euo pipefail
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT_DIR"
 
-IMAGE="minlag/mermaid-cli:latest"
+IMAGE="minlag/mermaid-cli:12.0.0"
 CONFIG_FILE="/data/scripts/mermaid-config.json"
 BG_COLOR="#0d1117"
 PARALLEL_JOBS="${PARALLEL_JOBS:-4}"

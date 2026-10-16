@@ -79,6 +79,6 @@ A multi-horizon roadmap outlining personal development, professional credentials
 | **Next** | Flagship Profile Context Blocks | 🗓️ | *(Refinement deferred)* Add standardized "My role / Team / Timeframe / Status / Outcome" headers across flagship profiles. |
 | **Next** | Inbound Communication Channels | 🗓️ | *(Refinement deferred)* Add verified public contact details and asynchronous communication channels to the repository. |
 | **Now** | Addressing & Hostname Sanitization Pass | ✅ | Hazard-filter pass replacing internal hostnames, container node identifiers, and private IP addressing with role-based system descriptors across affected project profiles (01, 02, 06, 07, and 20). |
-| **Next** | Diagram Toolchain Image Pinning | 🗓️ | *(Refinement deferred)* Pin the Mermaid CLI Docker image tag (`minlag/mermaid-cli`) across all compilation commands to ensure deterministic builds. |
+| **Now** | Diagram Toolchain Image Pinning | ✅ | Pin the Mermaid CLI Docker image tag (`minlag/mermaid-cli:12.0.0`) in `scripts/compile_diagrams.sh` to ensure deterministic, reproducible builds. |
 | **Next** | Pre-Compiled SVG Asset Linking | 🗓️ | *(Refinement deferred)* Directly embed Markdown links to pre-compiled `.svg` vector files inside project profiles alongside raw Mermaid source. |
 | **Later** | Automated CI Diagram Linting | 💭 | Implement containerized CI validation to prevent diagram drift and verify vector generation on commits. |

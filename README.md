@@ -4,7 +4,7 @@ Welcome to my declassified portfolio. If you are reviewing this repository, you 
 
 This collection has been curated from years of private enterprise builds. Through a rigorous process of "Hazard Filtering," I have extracted the pure systemic principles from my work while ruthlessly redacting all proprietary IP, client identifiers, and internal hostnames to maintain strict data sovereignty. It is the structural engine, minus the live ammo.
 
-As highlighted throughout my notebook (Used as sources), I do not just write code; I translate complex, multi-stakeholder bottlenecks into deterministic, machine-executable YAML definitions and high-throughput, event-driven platforms. I build antifragile systems that decouple operational complexity from human time, ensuring absolute data sovereignty and exponential scalability.
+As detailed in the [System Disclosure & Provenance](DISCLOSURE.md), I do not just write code; I translate complex, multi-stakeholder bottlenecks into deterministic, machine-executable YAML definitions and high-throughput, event-driven platforms. I build antifragile systems that decouple operational complexity from human time, ensuring absolute data sovereignty and exponential scalability.
 
 ---
 
@@ -12,7 +12,8 @@ As highlighted throughout my notebook (Used as sources), I do not just write cod
 
 - 🧭 **[Project Index](INDEX.md)** — Filter and navigate all 26 projects by engineering role, architectural concept, technology stack, and industry sector.
 - 📖 **[Technical Glossary](GLOSSARY.md)** — Architectural lexicon, systems dynamics concepts, and sovereign platform terminology.
-- 🛡️ **[Security & Disclosure Policy](SECURITY.md)** — Defence-in-depth principles, abridged threat model, and hazard-filtering redaction policy.
+- 🛡️ **[Security Policy & Disclosure Protocol](SECURITY.md)** — Defence-in-depth principles, abridged threat model, and hazard-filtering redaction policy.
+- 📜 **[System Disclosure & Provenance](DISCLOSURE.md)** — Architectural provenance, end-to-end toolchain disclosure, verification methodology, and transparency matrix.
 - 📐 **[Systems Architecture Principles](ARCHITECTURE.md)** — Foundational design rules, Donella Meadows dual-paradigm modelling, default stack matrix, and retrospective lessons.
 - 🗺️ **[Strategic Roadmap](ROADMAP.md)** — Multi-horizon roadmap across personal, professional, business, and portfolio development tracks.
 - 👤 **[The Architect](humans.md)** — Background, AuDHD cognitive architecture, and codified advisory schemas.
@@ -79,7 +80,7 @@ chmod +x scripts/compile_diagrams.sh
 Or execute an ad-hoc compilation for any individual diagram:
 
 ```bash
-docker run --rm -v "$(pwd):/data" minlag/mermaid-cli \
+docker run --rm -v "$(pwd):/data" minlag/mermaid-cli:12.0.0 \
     -i /data/projects/01-event-sourcing-operations-hub/diagrams/architecture.mmd \
     -o /data/projects/01-event-sourcing-operations-hub/diagrams/architecture.svg
 ```
