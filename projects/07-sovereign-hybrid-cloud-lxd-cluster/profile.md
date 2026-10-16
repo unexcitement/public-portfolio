@@ -45,8 +45,8 @@ flowchart TB
         end
 
         subgraph EdgeNodes["Home Laboratory Perimeter (Edge Uplink)"]
-            ZNUC["Edge mini-PC (uptime probe relay & Edge Egress)"]
-            ZWS["Edge workstation (Ephemeral CI Runner)"]
+            EdgeMini["Edge mini-PC (uptime probe relay & Edge Egress)"]
+            EdgeWorkstation["Edge workstation (Ephemeral CI Runner)"]
         end
     end
 
@@ -57,8 +57,8 @@ flowchart TB
 
     ControlPlane <-->|"LXD Raft Consensus (TCP :8443)"| VPS00
     ControlPlane <-->|"LXD Raft Consensus (TCP :8443)"| VPS01
-    ControlPlane <-->|Tailscale Mesh WAN| ZNUC
-    ControlPlane <-->|Tailscale Mesh WAN| ZWS
+    ControlPlane <-->|Tailscale Mesh WAN| EdgeMini
+    ControlPlane <-->|Tailscale Mesh WAN| EdgeWorkstation
 
     WorkloadInstances -.->|OIDC Authentication| SSONode
     WorkloadInstances -.->|Dynamic Secrets Injection| BaoNode
